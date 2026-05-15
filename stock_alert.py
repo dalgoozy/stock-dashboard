@@ -8,6 +8,7 @@ import yfinance as yf
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.header import Header
 import os
 from datetime import datetime, timezone, timedelta
 
@@ -125,7 +126,7 @@ def send_email(subject, html_body):
         print("❌ 환경변수 없음 (GMAIL_ADDRESS / GMAIL_APP_PASSWORD)")
         return False
     msg = MIMEMultipart("alternative")
-    msg["Subject"] = subject
+    msg["Subject"] = Header(subject, charset="utf-8")
     msg["From"]    = GMAIL_ADDRESS
     msg["To"]      = TO_ADDRESS
     msg.attach(MIMEText(html_body, "html", "utf-8"))
