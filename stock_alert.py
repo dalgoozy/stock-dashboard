@@ -36,7 +36,7 @@ DANGER_PCT = -15.0  # 🔴 위험: -15%
 # ──────────────────────────────────────────
 GMAIL_ADDRESS  = os.environ.get("GMAIL_ADDRESS", "")
 GMAIL_APP_PASS = os.environ.get("GMAIL_APP_PASSWORD", "")
-TO_ADDRESS     = "hwandabears99@gmail.com"
+TO_ADDRESS     = "hwandabears01@gmail.com"
 
 KST = timezone(timedelta(hours=9))
 
