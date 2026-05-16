@@ -127,7 +127,7 @@ def send_email(subject, html_body):
     msg["Subject"] = subject
     msg["From"]    = GMAIL_ADDRESS
     msg["To"]      = TO_ADDRESS
-    msg.set_content("Boss 주식 스탑로스 알림 (HTML 메일 지원 클라이언트에서 보세요)")
+    msg.set_content("Boss Stock Alert - Please view in HTML email client")
     msg.add_alternative(html_body, subtype="html")
 
     try:
