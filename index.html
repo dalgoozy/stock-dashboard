@@ -161,14 +161,15 @@ tbody tr:hover td{background:rgba(59,130,246,.04);}
 <!-- 섹션 1 -->
 <div id="s1" class="section">
   <div class="search-box">
-    <input class="search-input" type="text" id="search-input" placeholder="종목명 입력 (예: 삼성전자, POSCO홀딩스)" onkeydown="if(event.key==='Enter')runSearch()">
-    <button class="btn btn-blue" onclick="runSearch()">🔍 분석 시작</button>
+    <input class="search-input" type="text" id="search-input" placeholder="종목명 입력 (예: 두산에너빌리티, POSCO홀딩스)" onkeydown="if(event.key==='Enter')runSearch()">
+    <button class="btn btn-blue" onclick="runSearch()">🤖 이선생에게 분석 요청</button>
   </div>
   <div id="s1-result">
     <div class="placeholder-box">
-      <div class="ph-icon">🔍</div>
-      <p>종목명을 입력하고 분석 시작을 누르면<br>3개 클러스터 전체 분석 결과를 제공합니다.<br><br>
-      <span style="font-size:0.78rem">가치평가 · 기업체력 · 타이밍 + Moat 분석</span></p>
+      <div class="ph-icon">🤖</div>
+      <p>종목명을 입력하고 버튼을 누르면<br>이선생(Claude AI)이 분석을 시작합니다.<br><br>
+      <span style="font-size:0.78rem;color:#9ca3af">분석 쿼리가 자동 복사되고 Claude AI 프로젝트가 열립니다<br>붙여넣기(⌘V / 길게 누르기) 후 전송하면 됩니다</span><br><br>
+      <span style="font-size:0.75rem;color:#6b7280">가치평가 35점 · 기업체력 35점 · 타이밍 30점 + Moat 분석</span></p>
     </div>
   </div>
 </div>
@@ -366,13 +367,38 @@ function sectorUpdate(){
   alert('📡 섹터 업데이트\n\n이선생이 각 섹터의 최신 사이클 위치를 분석하여 업데이트합니다.\n현재 데이터: 2026.05.16 기준');
 }
 
+// ★ Claude Project URL — Project 생성 후 여기에 URL 붙여넣기
+const CLAUDE_PROJECT_URL = 'https://claude.ai/project/019e30e0-8b59-724a-abc7-d01cce7b2ca5';
+
 function runSearch(){
   const q=document.getElementById('search-input').value.trim();
   if(!q)return;
-  document.getElementById('s1-result').innerHTML=`
-    <div class="info-banner">⏳ "${q}" 분석 기능은 v2에서 구현 예정입니다.</div>
-    <div class="placeholder-box"><div class="ph-icon">🔄</div>
-    <p>현재는 섹션 2 보유종목 분석을 먼저 이용해 주세요.</p></div>`;
+  const query=`${q} 분석해줘`;
+  // 클립보드 복사
+  navigator.clipboard.writeText(query).then(()=>{
+    document.getElementById('s1-result').innerHTML=`
+      <div class="info-banner" style="background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.3);color:#34d399">
+        ✅ 클립보드에 복사됨: <b>"${query}"</b>
+      </div>
+      <div class="placeholder-box">
+        <div class="ph-icon">🤖</div>
+        <p style="color:#f9fafb"><b>Claude AI 창이 열렸습니다</b><br><br>
+        <span style="font-size:0.85rem;color:#9ca3af">붙여넣기 <b style="color:#f9fafb">⌘V</b> (맥) / <b style="color:#f9fafb">길게 누르기→붙여넣기</b> (폰) 후 전송하세요</span><br><br>
+        <span style="font-size:0.75rem;color:#6b7280">분석 결과는 대시보드와 동일한 디자인으로 표시됩니다</span></p>
+        <div style="margin-top:14px">
+          <button class="btn btn-blue" onclick="window.open(CLAUDE_PROJECT_URL,'_blank')">🤖 Claude AI 다시 열기</button>
+        </div>
+      </div>`;
+    window.open(CLAUDE_PROJECT_URL,'_blank');
+  }).catch(()=>{
+    // 클립보드 실패 시 수동 복사 안내
+    document.getElementById('s1-result').innerHTML=`
+      <div class="warn-banner">⚠️ 클립보드 자동 복사 실패 — 아래 텍스트를 직접 복사하세요</div>
+      <div class="card" style="text-align:center;padding:20px">
+        <div style="background:#0a0e1a;border:1px solid #2d3748;border-radius:8px;padding:12px 16px;font-size:1rem;font-weight:600;color:#f9fafb;margin-bottom:14px">${query}</div>
+        <button class="btn btn-blue" onclick="window.open(CLAUDE_PROJECT_URL,'_blank')">🤖 Claude AI 열기</button>
+      </div>`;
+  });
 }
 
 function fmt(n){return n!=null?n.toLocaleString('ko-KR'):'—';}
