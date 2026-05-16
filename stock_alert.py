@@ -158,9 +158,9 @@ def main():
     warn_cnt   = len(alerts) - danger_cnt
 
     if danger_cnt:
-        subject = f"[Boss 주식] 위험 스탑로스 {danger_cnt}종목 - {now_str}"
+        subject = f"[Boss Stock] DANGER Stop-Loss {danger_cnt} stocks - {now_str}"
     else:
-        subject = f"[Boss 주식] 경고 스탑로스 {warn_cnt}종목 - {now_str}"
+        subject = f"[Boss Stock] WARNING Stop-Loss {warn_cnt} stocks - {now_str}"
 
     html = build_email_html(alerts, all_stocks, now_str)
     send_email(subject, html)
