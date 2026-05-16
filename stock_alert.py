@@ -12,7 +12,7 @@ HOLDINGS = [
     {"name": "효성중공업",    "ticker": "298040.KS", "avg": 4150000, "qty": 7},
 ]
 
-WARN_PCT   = 999.0
+WARN_PCT   = -8.0
 DANGER_PCT = -15.0
 GMAIL_ADDRESS  = os.environ.get("GMAIL_ADDRESS", "")
 GMAIL_APP_PASS = os.environ.get("GMAIL_APP_PASSWORD", "")
