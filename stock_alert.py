@@ -133,7 +133,7 @@ def send_email(subject, html_body):
     try:
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
             server.login(GMAIL_ADDRESS, GMAIL_APP_PASS)
-            server.sendmail(GMAIL_ADDRESS, TO_ADDRESS, msg.as_string())
+            server.send_message(msg)
         print(f"✅ 이메일 발송 완료 → {TO_ADDRESS}")
         return True
     except Exception as e:
