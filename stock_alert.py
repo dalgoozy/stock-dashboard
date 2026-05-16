@@ -1,12 +1,5 @@
-"""
-Boss 주식 스탑로스 이메일 알림 시스템
-"""
-
 import yfinance as yf
-import smtplib
-import ssl
-import base64
-import os
+import smtplib, ssl, base64, os
 from datetime import datetime, timezone, timedelta
 
 HOLDINGS = [
@@ -19,13 +12,11 @@ HOLDINGS = [
     {"name": "효성중공업",    "ticker": "298040.KS", "avg": 4150000, "qty": 7},
 ]
 
-WARN_PCT   = 999.0   # 테스트용 (실제: -8.0)
+WARN_PCT   = 999.0
 DANGER_PCT = -15.0
-
 GMAIL_ADDRESS  = os.environ.get("GMAIL_ADDRESS", "")
 GMAIL_APP_PASS = os.environ.get("GMAIL_APP_PASSWORD", "")
 TO_ADDRESS     = "hwandabears01@gmail.com"
-
 KST = timezone(timedelta(hours=9))
 
 
@@ -33,143 +24,81 @@ def fetch_prices():
     results = []
     for h in HOLDINGS:
         try:
-            stock = yf.Ticker(h["ticker"])
-            info  = stock.fast_info
+            info  = yf.Ticker(h["ticker"]).fast_info
             price = round(info.last_price) if info.last_price else 0
             pct   = round((price - h["avg"]) / h["avg"] * 100, 2) if h["avg"] else 0
             pnl   = round((price - h["avg"]) * h["qty"])
             results.append({**h, "price": price, "pct": pct, "pnl": pnl})
-            tag = "R" if pct <= DANGER_PCT else "W" if pct <= WARN_PCT else "OK"
-            print(f"[{tag}] {h['name']}: {price:,}  {pct:+.1f}%  {pnl:+,.0f}")
         except Exception as e:
-            print(f"[ERR] {h['name']}: {e}")
             results.append({**h, "price": 0, "pct": 0, "pnl": 0})
     return results
 
 
-def build_html(alerts, all_stocks, now_str):
-    danger_list = [s for s in alerts if s["pct"] <= DANGER_PCT]
-    warn_list   = [s for s in alerts if DANGER_PCT < s["pct"] <= WARN_PCT]
-
-    def row_bg(pct):
-        if pct <= DANGER_PCT: return "#2d1515"
-        if pct <= WARN_PCT:   return "#2d2510"
-        return "#0f1a0f"
-
-    def pct_color(pct):
-        if pct <= DANGER_PCT: return "#ef4444"
-        if pct <= WARN_PCT:   return "#f59e0b"
-        return "#10b981"
-
-    rows = ""
-    for s in all_stocks:
-        if s["price"] == 0:
-            continue
-        rows += (
-            f'<tr style="background:{row_bg(s["pct"])};">'
-            f'<td style="padding:10px;border-bottom:1px solid #1f2937;font-weight:600">{s["name"]}</td>'
-            f'<td style="padding:10px;border-bottom:1px solid #1f2937;text-align:right">{s["price"]:,}원</td>'
-            f'<td style="padding:10px;border-bottom:1px solid #1f2937;text-align:right">{s["avg"]:,}원</td>'
-            f'<td style="padding:10px;border-bottom:1px solid #1f2937;text-align:right;font-weight:700;color:{pct_color(s["pct"])}">{s["pct"]:+.1f}%</td>'
-            f'<td style="padding:10px;border-bottom:1px solid #1f2937;text-align:right;color:{pct_color(s["pct"])}">{s["pnl"]:+,.0f}원</td>'
-            f'</tr>'
-        )
-
-    summary = ""
-    if danger_list:
-        names = ", ".join(s["name"] for s in danger_list)
-        summary += f'<p style="color:#ef4444">위험(&le;-15%): <strong>{names}</strong></p>'
-    if warn_list:
-        names = ", ".join(s["name"] for s in warn_list)
-        summary += f'<p style="color:#f59e0b">경고(&le;-8%): <strong>{names}</strong></p>'
-
-    html = (
-        '<!DOCTYPE html><html><body style="background:#0a0e1a;color:#f9fafb;font-family:sans-serif;padding:20px">'
-        '<div style="max-width:640px;margin:0 auto">'
-        '<h2 style="color:#3b82f6">Boss 주식 스탑로스 알림</h2>'
-        f'<p style="color:#6b7280">{now_str}</p>'
-        f'<div style="background:#111827;border-radius:10px;padding:16px;margin-bottom:20px">{summary}</div>'
-        '<table style="width:100%;border-collapse:collapse;background:#111827">'
-        '<tr style="background:#1f2937">'
-        '<th style="padding:10px;text-align:left;color:#6b7280">종목</th>'
-        '<th style="padding:10px;text-align:right;color:#6b7280">현재가</th>'
-        '<th style="padding:10px;text-align:right;color:#6b7280">평단가</th>'
-        '<th style="padding:10px;text-align:right;color:#6b7280">수익률</th>'
-        '<th style="padding:10px;text-align:right;color:#6b7280">평가손익</th>'
-        '</tr>'
-        f'{rows}'
-        '</table>'
-        '<p style="margin-top:20px;text-align:center">'
-        '<a href="https://dalgoozy.github.io/stock-dashboard/" style="color:#3b82f6">대시보드 열기</a>'
-        '</p></div></body></html>'
-    )
-    return html
-
-
 def send_email(subject, html_body):
-    if not GMAIL_ADDRESS or not GMAIL_APP_PASS:
-        print("ERROR: no env vars")
+    print(f"DEBUG-1: subject = {repr(subject)}")
+
+    try:
+        html_b64 = base64.b64encode(html_body.encode("utf-8")).decode("ascii")
+        print("DEBUG-2: html b64 ok")
+    except Exception as e:
+        print(f"DEBUG-2 FAIL: {e}")
         return False
 
-    html_b64 = base64.b64encode(html_body.encode("utf-8")).decode("ascii")
-    boundary = "BOSS_STOCK_BOUNDARY"
+    raw = "\r\n".join([
+        f"From: {GMAIL_ADDRESS}",
+        f"To: {TO_ADDRESS}",
+        f"Subject: {subject}",
+        "MIME-Version: 1.0",
+        'Content-Type: text/html; charset=utf-8',
+        "Content-Transfer-Encoding: base64",
+        "",
+        html_b64,
+        "",
+    ])
+    print("DEBUG-3: raw built")
 
-    raw = (
-        f"From: {GMAIL_ADDRESS}\r\n"
-        f"To: {TO_ADDRESS}\r\n"
-        f"Subject: {subject}\r\n"
-        f"MIME-Version: 1.0\r\n"
-        f"Content-Type: multipart/alternative; boundary=\"{boundary}\"\r\n"
-        f"\r\n"
-        f"--{boundary}\r\n"
-        f"Content-Type: text/plain; charset=utf-8\r\n"
-        f"Content-Transfer-Encoding: base64\r\n"
-        f"\r\n"
-        f"{base64.b64encode(b'Boss Stock Alert').decode('ascii')}\r\n"
-        f"--{boundary}\r\n"
-        f"Content-Type: text/html; charset=utf-8\r\n"
-        f"Content-Transfer-Encoding: base64\r\n"
-        f"\r\n"
-        f"{html_b64}\r\n"
-        f"--{boundary}--\r\n"
-    )
+    try:
+        raw_bytes = raw.encode("ascii")
+        print("DEBUG-4: encode ascii ok")
+    except Exception as e:
+        print(f"DEBUG-4 FAIL at encode ascii: {e}")
+        print(f"DEBUG-4 subject repr: {repr(subject)}")
+        print(f"DEBUG-4 GMAIL_ADDRESS repr: {repr(GMAIL_ADDRESS)}")
+        print(f"DEBUG-4 TO_ADDRESS repr: {repr(TO_ADDRESS)}")
+        return False
 
     try:
         ctx = ssl.create_default_context()
         with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=ctx) as server:
+            print("DEBUG-5: connected")
             server.login(GMAIL_ADDRESS, GMAIL_APP_PASS)
-            server.sendmail(GMAIL_ADDRESS, TO_ADDRESS, raw.encode("ascii"))
-        print(f"OK: email sent -> {TO_ADDRESS}")
+            print("DEBUG-6: logged in")
+            server.sendmail(GMAIL_ADDRESS, TO_ADDRESS, raw_bytes)
+            print(f"DEBUG-7: sent OK -> {TO_ADDRESS}")
         return True
     except Exception as e:
-        print(f"ERROR: {e}")
+        print(f"DEBUG-5to7 FAIL: {e}")
         return False
 
 
 def main():
-    now_kst = datetime.now(KST)
-    now_str = now_kst.strftime("%Y.%m.%d %H:%M KST")
-    print(f"\n[START] {now_str}\n")
+    now_str = datetime.now(KST).strftime("%Y.%m.%d %H:%M KST")
+    print(f"[START] {now_str}")
 
     all_stocks = fetch_prices()
     alerts = [s for s in all_stocks if s["pct"] <= WARN_PCT and s["price"] > 0]
 
     if not alerts:
-        print("\n[OK] no stop-loss triggered")
+        print("[OK] no alerts")
         return
 
-    danger_cnt = sum(1 for s in alerts if s["pct"] <= DANGER_PCT)
-    warn_cnt   = len(alerts) - danger_cnt
+    warn_cnt   = sum(1 for s in alerts if s["pct"] > DANGER_PCT)
+    danger_cnt = len(alerts) - warn_cnt
+    subject    = f"[Boss Stock] WARNING {warn_cnt} - {now_str}" if not danger_cnt else f"[Boss Stock] DANGER {danger_cnt} - {now_str}"
 
-    if danger_cnt:
-        subject = f"[Boss Stock] DANGER Stop-Loss {danger_cnt} stocks - {now_str}"
-    else:
-        subject = f"[Boss Stock] WARNING Stop-Loss {warn_cnt} stocks - {now_str}"
-
-    html = build_html(alerts, all_stocks, now_str)
+    html = f"<html><body><p>Boss Stock Alert {now_str}</p><p>{len(alerts)} stocks triggered.</p></body></html>"
     send_email(subject, html)
-    print(f"\n[DONE] alerts: {[s['name'] for s in alerts]}")
-
+    print("[DONE]")
 
 if __name__ == "__main__":
     main()
