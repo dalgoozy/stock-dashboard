@@ -373,7 +373,7 @@ const CLAUDE_PROJECT_URL = 'https://claude.ai/project/019e30e0-8b59-724a-abc7-d0
 function runSearch(){
   const q=document.getElementById('search-input').value.trim();
   if(!q)return;
-  const query=`${q} 분석해줘`;
+  const query=`이선생, ${q} 분석해줘`;
   // 클립보드 복사
   navigator.clipboard.writeText(query).then(()=>{
     document.getElementById('s1-result').innerHTML=`
