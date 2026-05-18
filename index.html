@@ -109,10 +109,10 @@ tbody tr:hover td{background:rgba(59,130,246,.04);}
 .placeholder-box{background:var(--bg-card);border:2px dashed var(--border-light);border-radius:12px;padding:40px 20px;text-align:center;color:var(--text-muted);}
 .placeholder-box .ph-icon{font-size:2.2rem;margin-bottom:10px;}
 .placeholder-box p{font-size:0.85rem;line-height:1.6;}
-.sector-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px;}
-.sector-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:all .2s;}
+.sector-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;}
+.sector-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:16px;transition:all .2s;}
 .sector-card:hover{border-color:var(--accent);}
-.sector-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.sector-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
 .sector-card-top .s-name{font-weight:600;font-size:0.93rem;}
 .s-cycle{font-size:0.7rem;font-weight:600;padding:2px 8px;border-radius:20px;}
 .cycle-bottom{background:rgba(16,185,129,.15);color:var(--green);}
@@ -120,10 +120,27 @@ tbody tr:hover td{background:rgba(59,130,246,.04);}
 .cycle-mid{background:rgba(245,158,11,.15);color:var(--yellow);}
 .cycle-top{background:rgba(239,68,68,.15);color:var(--red);}
 .sector-card p{font-size:0.77rem;color:var(--text-muted);line-height:1.5;margin-bottom:10px;}
-.sector-signals{display:flex;gap:6px;}
+.sector-signals{display:flex;gap:6px;margin-bottom:10px;}
 .s-sig-item{display:flex;flex-direction:column;align-items:center;background:var(--bg-secondary);border-radius:6px;padding:4px 8px;}
 .s-sig-item .si-lbl{font-size:0.58rem;color:var(--text-muted);}
 .s-sig-item .si-val{font-size:0.85rem;}
+.sector-perf{font-size:0.72rem;font-weight:700;padding:2px 7px;border-radius:12px;white-space:nowrap;}
+.sector-perf-up{background:rgba(239,68,68,.15);color:#f87171;}
+.sector-perf-dn{background:rgba(96,165,250,.15);color:#60a5fa;}
+.sector-perf-flat{background:rgba(107,114,128,.15);color:var(--text-muted);}
+.sector-footer{display:flex;gap:6px;flex-wrap:wrap;}
+.s-btn{padding:6px 11px;border-radius:6px;border:none;font-size:0.72rem;font-weight:600;cursor:pointer;transition:all .2s;}
+.s-btn-stocks{background:rgba(59,130,246,.1);color:var(--accent);border:1px solid rgba(59,130,246,.3);}
+.s-btn-stocks:hover{background:rgba(59,130,246,.2);}
+.s-btn-analyze{background:rgba(16,185,129,.1);color:var(--green);border:1px solid rgba(16,185,129,.3);}
+.s-btn-analyze:hover{background:rgba(16,185,129,.2);}
+.sector-modal-box{background:var(--bg-card);border:1px solid var(--border-light);border-radius:14px;padding:22px;max-width:560px;width:100%;max-height:82vh;overflow-y:auto;}
+.sector-stocks-tbl{width:100%;border-collapse:collapse;font-size:0.8rem;margin-top:10px;}
+.sector-stocks-tbl th{padding:7px 10px;color:var(--text-muted);font-size:0.67rem;font-weight:600;text-transform:uppercase;border-bottom:1px solid var(--border);text-align:left;}
+.sector-stocks-tbl td{padding:9px 10px;border-bottom:1px solid var(--border);color:var(--text-secondary);}
+.sector-stocks-tbl tr:last-child td{border-bottom:none;}
+.pos52-bar{display:inline-block;width:60px;height:5px;background:var(--border);border-radius:3px;vertical-align:middle;}
+.pos52-fill{height:100%;border-radius:3px;display:block;}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;align-items:center;justify-content:center;padding:20px;}
 .modal-overlay.open{display:flex;}
 .modal-box{background:var(--bg-card);border:1px solid var(--border-light);border-radius:14px;padding:22px;max-width:420px;width:100%;}
@@ -212,7 +229,7 @@ tbody tr:hover td{background:rgba(59,130,246,.04);}
     📡 <b>사이클 바닥 / 회복 초입</b> 섹터를 우선 표시합니다. "핫한 섹터"가 아닌 <b>아직 안 오른 섹터</b> 발굴이 목적입니다.
   </div>
   <div class="btn-group">
-    <button class="btn btn-blue" onclick="sectorUpdate()">🔄 섹터 분석 업데이트</button>
+    <button class="btn btn-blue" onclick="sectorUpdate()">🔄 섹터 데이터 새로고침</button>
     <span style="font-size:0.75rem;color:var(--text-muted)">마지막 분석: <span id="sector-date">2026.05.16</span></span>
   </div>
   <div class="sector-grid" id="sector-grid"></div>
@@ -225,6 +242,13 @@ tbody tr:hover td{background:rgba(59,130,246,.04);}
     <button class="modal-close" onclick="closeModal()">✕</button>
     <h3 id="modal-title"></h3>
     <p id="modal-body"></p>
+  </div>
+</div>
+
+<div class="modal-overlay" id="sector-modal" onclick="closeSectorModal()">
+  <div class="sector-modal-box" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeSectorModal()">✕</button>
+    <div id="sector-modal-content"></div>
   </div>
 </div>
 
@@ -268,13 +292,32 @@ const HOLDINGS=[
 ];
 
 const SECTORS=[
-  {name:'전력기기·변압기',cycle:'회복 초입',cycleClass:'cycle-early',desc:'AI 데이터센터 + 전력망 노후 교체 수요 급증. 납기 2~3년, 수주잔량 사상 최대.',c1:'🟢',c2:'🟢',c3:'🟢'},
-  {name:'조선·해양',cycle:'회복 초입',cycleClass:'cycle-early',desc:'신조선가 상승 지속, LNG선 발주 증가. 수주잔량 3년치 이상 확보.',c1:'🟡',c2:'🟢',c3:'🟢'},
-  {name:'방산',cycle:'사이클 중반',cycleClass:'cycle-mid',desc:'글로벌 국방비 증가 추세 지속. 단 52주 고점 근처 종목 다수 — 신규 진입 신중.',c1:'🟡',c2:'🟢',c3:'🟡'},
-  {name:'반도체 메모리',cycle:'회복 중반',cycleClass:'cycle-mid',desc:'DRAM 가격 회복 중반. HBM 구조적 성장 겹침. 신규 진입보다 보유 점검 구간.',c1:'🟡',c2:'🟢',c3:'🟡'},
-  {name:'화학·정유',cycle:'바닥 근처',cycleClass:'cycle-bottom',desc:'중국 수요 부진으로 수년째 침체. 회복 신호 불명확하나 밸류에이션 역사적 저점.',c1:'🟢',c2:'🟡',c3:'🟡'},
-  {name:'자동차',cycle:'바닥 근처',cycleClass:'cycle-bottom',desc:'글로벌 판매 둔화 + EV 전환 비용. PBR 0.5~0.7배 역사적 저점. 턴어라운드 대기.',c1:'🟢',c2:'🟢',c3:'🟡'},
+  {id:'power',name:'전력기기·변압기',cycle:'회복 초입',cycleClass:'cycle-early',
+   desc:'AI 데이터센터 + 전력망 노후 교체 수요 급증. 납기 2~3년, 수주잔량 사상 최대.',
+   c1:'🟢',c2:'🟢',c3:'🟢',
+   stocks:[{name:'효성중공업',ticker:'298040.KS'},{name:'LS ELECTRIC',ticker:'010120.KS'},{name:'HD현대일렉트릭',ticker:'267260.KS'},{name:'일진전기',ticker:'103590.KS'}]},
+  {id:'shipbuilding',name:'조선·해양',cycle:'회복 초입',cycleClass:'cycle-early',
+   desc:'신조선가 상승 지속, LNG선 발주 증가. 수주잔량 3년치 이상 확보.',
+   c1:'🟡',c2:'🟢',c3:'🟢',
+   stocks:[{name:'한화오션',ticker:'042660.KS'},{name:'HD한국조선해양',ticker:'009540.KS'},{name:'삼성중공업',ticker:'010140.KS'}]},
+  {id:'defense',name:'방산',cycle:'사이클 중반',cycleClass:'cycle-mid',
+   desc:'글로벌 국방비 증가 추세 지속. 단 52주 고점 근처 종목 다수 — 신규 진입 신중.',
+   c1:'🟡',c2:'🟢',c3:'🟡',
+   stocks:[{name:'한화에어로스페이스',ticker:'012450.KS'},{name:'LIG넥스원',ticker:'079550.KS'},{name:'현대로템',ticker:'064350.KS'},{name:'한국항공우주',ticker:'047810.KS'}]},
+  {id:'semiconductor',name:'반도체 메모리',cycle:'회복 중반',cycleClass:'cycle-mid',
+   desc:'DRAM 가격 회복 중반. HBM 구조적 성장 겹침. 신규 진입보다 보유 점검 구간.',
+   c1:'🟡',c2:'🟢',c3:'🟡',
+   stocks:[{name:'SK하이닉스',ticker:'000660.KS'},{name:'삼성전자',ticker:'005930.KS'},{name:'한미반도체',ticker:'042700.KS'}]},
+  {id:'chemical',name:'화학·정유',cycle:'바닥 근처',cycleClass:'cycle-bottom',
+   desc:'중국 수요 부진으로 수년째 침체. 회복 신호 불명확하나 밸류에이션 역사적 저점.',
+   c1:'🟢',c2:'🟡',c3:'🟡',
+   stocks:[{name:'LG화학',ticker:'051910.KS'},{name:'SK이노베이션',ticker:'096770.KS'},{name:'롯데케미칼',ticker:'011170.KS'}]},
+  {id:'auto',name:'자동차',cycle:'바닥 근처',cycleClass:'cycle-bottom',
+   desc:'글로벌 판매 둔화 + EV 전환 비용. PBR 0.5~0.7배 역사적 저점. 턴어라운드 대기.',
+   c1:'🟢',c2:'🟢',c3:'🟡',
+   stocks:[{name:'현대차',ticker:'005380.KS'},{name:'기아',ticker:'000270.KS'},{name:'현대모비스',ticker:'012330.KS'}]},
 ];
+let sectorData={};
 
 const TOOLTIPS={
   'PER':'PER (주가수익비율, Price to Earnings Ratio)\n\n주가 ÷ 주당순이익(EPS)입니다.\n투자자가 1원의 이익을 얻기 위해 얼마를 지불하는지 나타냅니다.\n\n낮을수록 상대적 저평가입니다. 단, 업종 평균과 비교해야 의미가 있습니다.\n\n사이클 산업은 실적이 바닥일 때 PER이 높게 나와 고평가처럼 보이는 함정이 있습니다.',
@@ -363,8 +406,11 @@ function earningsUpdate(){
   alert('📊 실적 업데이트\n\n분기 실적 발표 후 이선생이 재무 데이터를 새로 분석하여 업데이트합니다.\n\n다음 실적 발표: 2026년 2Q (2026.07.25 예정)');
 }
 
-function sectorUpdate(){
-  alert('📡 섹터 업데이트\n\n이선생이 각 섹터의 최신 사이클 위치를 분석하여 업데이트합니다.\n현재 데이터: 2026.05.16 기준');
+async function sectorUpdate(){
+  const btn=event.currentTarget;
+  btn.disabled=true; btn.textContent='⏳ 로딩 중...';
+  await fetchSectors();
+  btn.disabled=false; btn.textContent='🔄 섹터 데이터 새로고침';
 }
 
 // ★ Claude Project URL — Project 생성 후 여기에 URL 붙여넣기
@@ -536,19 +582,91 @@ function renderCards(){
 }
 
 function renderSectors(){
-  document.getElementById('sector-grid').innerHTML=SECTORS.map(s=>`
-    <div class="sector-card">
+  document.getElementById('sector-grid').innerHTML=SECTORS.map((s,idx)=>{
+    const sd=sectorData[s.id]||{};
+    const ap=sd.avg_pct;
+    const perfHtml=ap!=null
+      ?`<span class="sector-perf ${ap>0?'sector-perf-up':ap<0?'sector-perf-dn':'sector-perf-flat'}">${ap>0?'+':''}${ap}%</span>`
+      :'';
+    return `<div class="sector-card">
       <div class="sector-card-top">
         <span class="s-name">${s.name}</span>
-        <span class="s-cycle ${s.cycleClass}">${s.cycle}</span>
+        <div style="display:flex;gap:5px;align-items:center">${perfHtml}<span class="s-cycle ${s.cycleClass}">${s.cycle}</span></div>
       </div>
-      <p>${s.desc}</p>
+      <p style="margin-top:6px">${s.desc}</p>
       <div class="sector-signals">
         <div class="s-sig-item"><span class="si-lbl">가치</span><span class="si-val">${s.c1}</span></div>
         <div class="s-sig-item"><span class="si-lbl">체력</span><span class="si-val">${s.c2}</span></div>
         <div class="s-sig-item"><span class="si-lbl">타이밍</span><span class="si-val">${s.c3}</span></div>
       </div>
-    </div>`).join('');
+      <div class="sector-footer">
+        <button class="s-btn s-btn-stocks" onclick="showSectorModal(${idx})">📊 대표종목</button>
+        <button class="s-btn s-btn-analyze" onclick="analyzeSector('${s.name}')">🤖 이선생 분석</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function fetchSectors(){
+  try{
+    const r=await fetch('sectors.json?t='+Date.now());
+    if(!r.ok)return;
+    const d=await r.json();
+    sectorData=d.sectors||{};
+    const el=document.getElementById('sector-date');
+    if(el)el.textContent=d.updated||'—';
+    renderSectors();
+  }catch(e){/* 정적 데이터 유지 */}
+}
+
+function showSectorModal(idx){
+  const s=SECTORS[idx];
+  const sd=sectorData[s.id]||{};
+  const stocks=(sd.stocks&&sd.stocks.length)?sd.stocks:s.stocks.map(st=>({...st,price:null,pct:null,pos52:null}));
+  const ap=sd.avg_pct;
+  const perfHtml=ap!=null
+    ?`<span class="sector-perf ${ap>0?'sector-perf-up':ap<0?'sector-perf-dn':'sector-perf-flat'}" style="margin-left:6px">${ap>0?'+':''}${ap}%</span>`
+    :'';
+  const rows=stocks.map(st=>{
+    const pCls=st.pct>0?'price-up':st.pct<0?'price-dn':'price-flat';
+    const bar=st.pos52!=null
+      ?`<span class="pos52-bar"><span class="pos52-fill" style="width:${st.pos52}%;background:${st.pos52>70?'#ef4444':st.pos52<30?'#10b981':'#f59e0b'}"></span></span> <span style="font-size:0.68rem;color:var(--text-muted)">${st.pos52}%</span>`
+      :'<span style="color:var(--text-muted)">—</span>';
+    return `<tr>
+      <td><b style="color:var(--text-primary)">${st.name}</b><br><span style="font-size:0.65rem;color:var(--text-muted)">${st.ticker}</span></td>
+      <td style="text-align:right">${st.price?st.price.toLocaleString()+'원':'—'}</td>
+      <td style="text-align:right" class="${pCls}">${st.pct!=null?(st.pct>0?'+':'')+st.pct+'%':'—'}</td>
+      <td>${bar}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('sector-modal-content').innerHTML=`
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap">
+      <h3 style="color:var(--accent);font-size:1rem;font-weight:700;margin:0">${s.name}</h3>
+      <span class="s-cycle ${s.cycleClass}">${s.cycle}</span>${perfHtml}
+    </div>
+    <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:4px">${s.desc}</p>
+    <div style="display:flex;gap:6px;margin-bottom:10px">
+      <div class="s-sig-item"><span class="si-lbl">가치평가</span><span class="si-val">${s.c1}</span></div>
+      <div class="s-sig-item"><span class="si-lbl">기업체력</span><span class="si-val">${s.c2}</span></div>
+      <div class="s-sig-item"><span class="si-lbl">타이밍</span><span class="si-val">${s.c3}</span></div>
+    </div>
+    <table class="sector-stocks-tbl">
+      <thead><tr><th>종목</th><th style="text-align:right">현재가</th><th style="text-align:right">등락</th><th>52주 위치</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div style="margin-top:14px;text-align:center">
+      <button class="s-btn s-btn-analyze" style="padding:8px 18px;font-size:0.8rem" onclick="analyzeSector('${s.name}')">🤖 이선생에게 ${s.name} 섹터 분석 요청</button>
+    </div>`;
+  document.getElementById('sector-modal').classList.add('open');
+}
+
+function closeSectorModal(){document.getElementById('sector-modal').classList.remove('open');}
+
+function analyzeSector(name){
+  const q=`이선생, ${name} 섹터 분석해줘`;
+  navigator.clipboard.writeText(q).then(()=>{
+    window.open(CLAUDE_PROJECT_URL,'_blank');
+  }).catch(()=>{window.open(CLAUDE_PROJECT_URL,'_blank');});
 }
 
 function showTooltip(key){
@@ -567,9 +685,11 @@ function scrollToCard(id){
 function renderAll(){renderSummary();renderCards();}
 
 async function init(){
-  renderSectors();renderAll();
-  const ok=await fetchPrices();
-  if(ok)renderAll();
+  renderSectors(); renderAll();
+  await Promise.all([
+    fetchPrices().then(ok=>{ if(ok) renderAll(); }),
+    fetchSectors()
+  ]);
 }
 
 init();
