@@ -110,8 +110,14 @@ def send_email(subject, html_body):
 
 
 def main():
-    now_str = datetime.now(KST).strftime("%Y.%m.%d %H:%M KST")
-    print(f"[START] {now_str}")
+    now     = datetime.now(KST)
+    now_str = now.strftime("%Y.%m.%d %H:%M KST")
+    # 14시 이후 실행 = 오후 3시 타임슬롯(최종), 그 전 = 오전 11시 타임슬롯(주의)
+    is_final    = (now.hour >= 14)
+    alert_tag   = "🚨 최종경고 — 마감 30분 전 대응 가능" if is_final else "⚠️ 주의 — 오후 3시 재확인 필요"
+    subject_tag = "최종경고" if is_final else "주의"
+
+    print(f"[START] {now_str}  ({'최종경고' if is_final else '주의'} 타임슬롯)")
     all_stocks = fetch_prices()
     alerts = [s for s in all_stocks if s["pct"] <= WARN_PCT and s["price"] > 0]
     if not alerts:
@@ -119,9 +125,9 @@ def main():
         return
     danger_cnt = sum(1 for s in alerts if s["pct"] <= DANGER_PCT)
     warn_cnt   = len(alerts) - danger_cnt
-    subject = (f"[Boss Stock] DANGER {danger_cnt} stocks - {now_str}" if danger_cnt
-               else f"[Boss Stock] WARNING {warn_cnt} stocks - {now_str}")
-    html = build_html(all_stocks, now_str)
+    subject = (f"[Boss Stock] {subject_tag} DANGER {danger_cnt}종목 - {now_str}" if danger_cnt
+               else f"[Boss Stock] {subject_tag} WARNING {warn_cnt}종목 - {now_str}")
+    html = build_html(all_stocks, f"{now_str}  |  {alert_tag}")
     send_email(subject, html)
     print(f"[DONE]")
 
