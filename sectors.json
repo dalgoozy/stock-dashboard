@@ -1,0 +1,55 @@
+{
+  "updated": "2026.05.18 16:30 KST",
+  "sectors": {
+    "power": {
+      "avg_pct": null,
+      "stocks": [
+        {"name": "효성중공업",     "ticker": "298040.KS", "price": null, "pct": null, "pos52": null, "w52h": null, "w52l": null},
+        {"name": "LS ELECTRIC",   "ticker": "010120.KS", "price": null, "pct": null, "pos52": null, "w52h": null, "w52l": null},
+        {"name": "HD현대일렉트릭", "ticker": "267260.KS", "price": null, "pct": null, "pos52": null, "w52h": null, "w52l": null},
+        {"name": "일진전기",       "ticker": "103590.KS", "price": null, "pct": null, "pos52": null, "w52h": null, "w52l": null}
+      ]
+    },
+    "shipbuilding": {
+      "avg_pct": null,
+      "stocks": [
+        {"name": "한화오션",       "ticker": "042660.KS", "price": null, "pct": null, "pos52": null, "w52h": null, "w52l": null},
+        {"name": "HD한국조선해양", "ticker": "009540.KS", "price": null, "pct": null, "pos52": null, "w52h": null, "w52l": null},
+        {"name": "삼성중공업",     "ticker": "010140.KS", "price": null, "pct": null, "pos52": null, "w52h": null, "w52l": null}
+      ]
+    },
+    "defense": {
+      "avg_pct": null,
+      "stocks": [
+        {"name": "한화에어로스페이스", "ticker": "012450.KS", "price": null, "pct": null, "pos52": null, "w52h": null, "w52l": null},
+        {"name": "LIG넥스원",          "ticker": "079550.KS", "price": null, "pct": null, "pos52": null, "w52h": null, "w52l": null},
+        {"name": "현대로템",            "ticker": "064350.KS", "price": null, "pct": null, "pos52": null, "w52h": null, "w52l": null},
+        {"name": "한국항공우주",        "ticker": "047810.KS", "price": null, "pct": null, "pos52": null, "w52h": null, "w52l": null}
+      ]
+    },
+    "semiconductor": {
+      "avg_pct": null,
+      "stocks": [
+        {"name": "SK하이닉스", "ticker": "000660.KS", "price": null, "pct": null, "pos52": null, "w52h": null, "w52l": null},
+        {"name": "삼성전자",   "ticker": "005930.KS", "price": null, "pct": null, "pos52": null, "w52h": null, "w52l": null},
+        {"name": "한미반도체", "ticker": "042700.KS", "price": null, "pct": null, "pos52": null, "w52h": null, "w52l": null}
+      ]
+    },
+    "chemical": {
+      "avg_pct": null,
+      "stocks": [
+        {"name": "LG화학",       "ticker": "051910.KS", "price": null, "pct": null, "pos52": null, "w52h": null, "w52l": null},
+        {"name": "SK이노베이션", "ticker": "096770.KS", "price": null, "pct": null, "pos52": null, "w52h": null, "w52l": null},
+        {"name": "롯데케미칼",   "ticker": "011170.KS", "price": null, "pct": null, "pos52": null, "w52h": null, "w52l": null}
+      ]
+    },
+    "auto": {
+      "avg_pct": null,
+      "stocks": [
+        {"name": "현대차",    "ticker": "005380.KS", "price": null, "pct": null, "pos52": null, "w52h": null, "w52l": null},
+        {"name": "기아",      "ticker": "000270.KS", "price": null, "pct": null, "pos52": null, "w52h": null, "w52l": null},
+        {"name": "현대모비스","ticker": "012330.KS", "price": null, "pct": null, "pos52": null, "w52h": null, "w52l": null}
+      ]
+    }
+  }
+}
