@@ -155,8 +155,6 @@ def main():
         data["roe"] = to_num(roe_raw)
         # 배당 지표
         data["dps"] = to_num(prof.get('주당배당금'))
-                    elif "주당배당금" in key:
-                        data["dps"] = to_num(val)
                 if eps is not None:
                     data["eps"] = eps
                 break
