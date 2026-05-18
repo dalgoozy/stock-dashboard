@@ -65,7 +65,7 @@ def get_profitability(corp_code: str, year: int) -> dict:
                 for item in d["list"]:
                     nm  = item.get("idx_nm", "")
                     val = item.get("thstrm_val", "")
-                    result[nm] = val
+                    result[nm.strip()] = val
                 print(f"  수익성 {year}/{reprt_code} ✓ ({len(result)}개 항목)")
                 return result
         except Exception as e:
