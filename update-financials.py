@@ -149,9 +149,12 @@ def main():
             if prof or eps is not None:
                 found_year = year
                 # ROE 파싱 (수익성 지표에서)
-                for key, val in prof.items():
-                    if "자기자본이익률" in key or "ROE" in key.upper():
-                        data["roe"] = to_num(val)
+                # ROE 직접 추출
+        roe_raw = prof.get('ROE') or prof.get('자기자본이익률')
+        print(f"  ROE raw: {repr(roe_raw)}")
+        data["roe"] = to_num(roe_raw)
+        # 배당 지표
+        data["dps"] = to_num(prof.get('주당배당금'))
                     elif "주당배당금" in key:
                         data["dps"] = to_num(val)
                 if eps is not None:
