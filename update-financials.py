@@ -66,7 +66,7 @@ def get_profitability(corp_code: str, year: int) -> dict:
                     nm  = item.get("idx_nm", "")
                     val = item.get("thstrm_val", "")
                     result[nm] = val
-                print(f"  수익성 {year}/{reprt_code} ✓ 항목: {list(result.keys())}")
+                print(f"  수익성 {year}/{reprt_code} ✓ ({len(result)}개 항목)")
                 return result
         except Exception as e:
             print(f"  [WARN] 수익성 {year}/{reprt_code}: {e}")
@@ -148,13 +148,8 @@ def main():
 
             if prof or eps is not None:
                 found_year = year
-                # ROE 파싱 (수익성 지표에서)
-                # ROE 직접 추출
-        roe_raw = prof.get('ROE') or prof.get('자기자본이익률')
-        print(f"  ROE raw: {repr(roe_raw)}")
-        data["roe"] = to_num(roe_raw)
-        # 배당 지표
-        data["dps"] = to_num(prof.get('주당배당금'))
+                data["roe"] = to_num(prof.get("ROE"))
+                data["dps"] = to_num(prof.get("주당배당금"))
                 if eps is not None:
                     data["eps"] = eps
                 break
