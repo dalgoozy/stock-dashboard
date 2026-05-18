@@ -195,7 +195,8 @@ tbody tr:hover td{background:rgba(59,130,246,.04);}
 <div id="s2" class="section active">
   <div class="btn-group">
     <button class="btn btn-blue" onclick="marketUpdate(event)">📈 시장 업데이트</button>
-    <button class="btn btn-outline" onclick="earningsUpdate()">📊 실적 업데이트</button>
+    <button class="btn btn-outline" onclick="earningsUpdate(event)">📊 재무 새로고침</button>
+    <span style="font-size:0.72rem;color:var(--text-muted)">DART: <span id="fin-date">—</span></span>
     <button class="btn btn-outline" onclick="toggleSettings()">⚙️ 보유 종목 설정</button>
   </div>
 
@@ -318,6 +319,7 @@ const SECTORS=[
    stocks:[{name:'현대차',ticker:'005380.KS'},{name:'기아',ticker:'000270.KS'},{name:'현대모비스',ticker:'012330.KS'}]},
 ];
 let sectorData={};
+let financialsData={};
 
 const TOOLTIPS={
   'PER':'PER (주가수익비율, Price to Earnings Ratio)\n\n주가 ÷ 주당순이익(EPS)입니다.\n투자자가 1원의 이익을 얻기 위해 얼마를 지불하는지 나타냅니다.\n\n낮을수록 상대적 저평가입니다. 단, 업종 평균과 비교해야 의미가 있습니다.\n\n사이클 산업은 실적이 바닥일 때 PER이 높게 나와 고평가처럼 보이는 함정이 있습니다.',
@@ -402,8 +404,24 @@ async function marketUpdate(event){
   btn.textContent=orig;btn.disabled=false;
 }
 
-function earningsUpdate(){
-  alert('📊 실적 업데이트\n\n분기 실적 발표 후 이선생이 재무 데이터를 새로 분석하여 업데이트합니다.\n\n다음 실적 발표: 2026년 2Q (2026.07.25 예정)');
+async function earningsUpdate(){
+  const btn=event.target;
+  const orig=btn.textContent;
+  btn.textContent='⏳ 로딩 중...'; btn.disabled=true;
+  await fetchFinancials();
+  renderAll();
+  btn.textContent=orig; btn.disabled=false;
+}
+
+async function fetchFinancials(){
+  try{
+    const r=await fetch('financials.json?t='+Date.now());
+    if(!r.ok)return;
+    const d=await r.json();
+    financialsData=d;
+    const el=document.getElementById('fin-date');
+    if(el)el.textContent=d.updated||'—';
+  }catch(e){/* 정적 데이터 유지 */}
 }
 
 async function sectorUpdate(){
@@ -537,17 +555,29 @@ function renderCards(){
       <div class="sc-body">
         <div class="sc-box">
           <div class="sc-box-title">📊 핵심 재무 지표</div>
-          <div class="metrics-mini">
-            <div class="metric-m"><div class="m-val">${h.per?h.per+'배':'—'}</div>
-              <div class="m-lbl" onclick="showTooltip('PER')">PER ℹ</div>
-              <div class="m-sub">${h.perVsAvg}</div></div>
-            <div class="metric-m"><div class="m-val">${h.pbr?h.pbr+'배':'—'}</div>
-              <div class="m-lbl" onclick="showTooltip('PBR')">PBR ℹ</div>
-              <div class="m-sub">${h.pbr&&h.pbr<1?'🟢 1배 이하':h.pbr&&h.pbr<2?'🟡 1~2배':'🔴 2배 초과'}</div></div>
-            <div class="metric-m"><div class="m-val">${h.roe?h.roe+'%':'—'}</div>
-              <div class="m-lbl" onclick="showTooltip('ROE')">ROE ℹ</div>
-              <div class="m-sub">${h.roe&&h.roe>=15?'🟢 우수':h.roe&&h.roe>=10?'🟡 양호':'🔴 낮음'}</div></div>
-          </div>
+          ${(()=>{
+            const sc=h.ticker.replace(/\.(KS|KQ)$/,'');
+            const fin=(financialsData.stocks||{})[sc]||{};
+            const liveEPS=fin.eps;
+            const liveBPS=fin.bps;
+            const liveROE=fin.roe!=null?fin.roe:h.roe;
+            const livePER=(price&&liveEPS&&liveEPS>0)?+(price/liveEPS).toFixed(1):h.per;
+            const livePBR=(price&&liveBPS&&liveBPS>0)?+(price/liveBPS).toFixed(2):h.pbr;
+            const perSrc=liveEPS?'실시간':'기준가';
+            const pbrSrc=liveBPS?'실시간':'기준가';
+            const roeSrc=fin.roe!=null?'DART':'기준가';
+            return `<div class="metrics-mini">
+              <div class="metric-m"><div class="m-val">${livePER?livePER+'배':'—'}</div>
+                <div class="m-lbl" onclick="showTooltip('PER')">PER ℹ</div>
+                <div class="m-sub" style="font-size:0.56rem">${livePER?`<span style="color:var(--accent)">${perSrc}</span> ${h.perVsAvg}`:h.perVsAvg}</div></div>
+              <div class="metric-m"><div class="m-val">${livePBR?livePBR+'배':'—'}</div>
+                <div class="m-lbl" onclick="showTooltip('PBR')">PBR ℹ</div>
+                <div class="m-sub" style="font-size:0.56rem"><span style="color:var(--accent)">${pbrSrc}</span> ${livePBR&&livePBR<1?'🟢 1배 이하':livePBR&&livePBR<2?'🟡 1~2배':livePBR?'🔴 2배 초과':'—'}</div></div>
+              <div class="metric-m"><div class="m-val">${liveROE!=null?liveROE+'%':'—'}</div>
+                <div class="m-lbl" onclick="showTooltip('ROE')">ROE ℹ</div>
+                <div class="m-sub" style="font-size:0.56rem"><span style="color:var(--accent)">${roeSrc}</span> ${liveROE!=null&&liveROE>=15?'🟢 우수':liveROE!=null&&liveROE>=10?'🟡 양호':liveROE!=null?'🔴 낮음':'—'}</div></div>
+            </div>`;
+          })()}
         </div>
         <div class="sc-box">
           <div class="sc-box-title">💼 내 포지션</div>
@@ -688,7 +718,8 @@ async function init(){
   renderSectors(); renderAll();
   await Promise.all([
     fetchPrices().then(ok=>{ if(ok) renderAll(); }),
-    fetchSectors()
+    fetchSectors(),
+    fetchFinancials().then(()=>renderAll())
   ]);
 }
 

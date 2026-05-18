@@ -1,0 +1,13 @@
+{
+  "updated": "2026.05.18",
+  "report_year": "2025",
+  "stocks": {
+    "000660": {"eps": null, "bps": null, "roe": null, "dps": null},
+    "005930": {"eps": null, "bps": null, "roe": null, "dps": null},
+    "005380": {"eps": null, "bps": null, "roe": null, "dps": null},
+    "010120": {"eps": null, "bps": null, "roe": null, "dps": null},
+    "042660": {"eps": null, "bps": null, "roe": null, "dps": null},
+    "189300": {"eps": null, "bps": null, "roe": null, "dps": null},
+    "298040": {"eps": null, "bps": null, "roe": null, "dps": null}
+  }
+}
