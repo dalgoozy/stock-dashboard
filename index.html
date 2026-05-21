@@ -22,7 +22,8 @@ body{background:var(--bg-primary);color:var(--text-primary);font-family:-apple-s
 .live-dot{display:inline-block;width:6px;height:6px;background:var(--green);border-radius:50%;margin-right:4px;animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 .tabs{background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:0 20px;}
-.tabs-inner{max-width:1200px;margin:0 auto;display:flex;}
+.tabs-inner{max-width:1200px;margin:0 auto;display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.tabs-inner::-webkit-scrollbar{display:none;}
 .tab{padding:12px 20px;background:none;border:none;border-bottom:2px solid transparent;color:var(--text-muted);font-size:0.88rem;cursor:pointer;transition:all .2s;white-space:nowrap;}
 .tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
 .tab:hover:not(.active){color:var(--text-secondary);}
@@ -169,6 +170,22 @@ tbody tr:hover td{background:rgba(59,130,246,.04);}
 .tag-sell{display:inline-block;background:rgba(96,165,250,.15);color:#60a5fa;border:1px solid rgba(96,165,250,.3);padding:2px 8px;border-radius:12px;font-size:0.68rem;font-weight:700;}
 .del-btn{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:0.85rem;padding:3px 6px;border-radius:4px;transition:all .15s;}
 .del-btn:hover{color:var(--red);background:rgba(239,68,68,.1);}
+/* 모바일 터치 최적화 */
+@media(max-width:480px){
+  .trade-form-grid{grid-template-columns:1fr 1fr;}
+  .tf-input,.tf-select{padding:12px 11px;font-size:1rem;min-height:46px;}
+  .trade-btn-full{display:flex;flex-direction:column;gap:10px;margin-bottom:0;}
+  .trade-btn-full .btn{width:100%;justify-content:center;padding:14px;font-size:0.95rem;border-radius:10px;}
+  .ts-val{font-size:1.05rem;}
+  .hide-mob{display:none;}
+  .trade-stat-grid{gap:8px;}
+  .trade-stat{padding:12px 8px;}
+  .card{padding:14px;}
+  .card-title{font-size:0.73rem;margin-bottom:10px;}
+}
+@media(min-width:481px){
+  .trade-btn-full{display:flex;gap:10px;flex-wrap:wrap;}
+}
 </style>
 </head>
 <body>
@@ -312,7 +329,7 @@ tbody tr:hover td{background:rgba(59,130,246,.04);}
         <input class="tf-input" type="text" id="tf-memo" placeholder="예: 1차 분할 매수">
       </div>
     </div>
-    <div class="btn-group" style="margin-bottom:0">
+    <div class="trade-btn-full">
       <button class="btn btn-buy" onclick="addTrade('buy')">📈 매수 추가</button>
       <button class="btn btn-sell" onclick="addTrade('sell')">📉 매도 추가</button>
     </div>
@@ -323,8 +340,8 @@ tbody tr:hover td{background:rgba(59,130,246,.04);}
     <div class="tbl-wrap">
       <table>
         <thead><tr>
-          <th>종목</th><th>수량</th><th>평균단가</th><th>현재가</th>
-          <th>미실현 손익</th><th>수익률</th><th>실현 손익</th>
+          <th>종목</th><th>수량</th><th class="hide-mob">평균단가</th><th class="hide-mob">현재가</th>
+          <th>미실현 손익</th><th>수익률</th><th class="hide-mob">실현 손익</th>
         </tr></thead>
         <tbody id="holdings-tbody"></tbody>
       </table>
@@ -337,7 +354,7 @@ tbody tr:hover td{background:rgba(59,130,246,.04);}
       <table>
         <thead><tr>
           <th>날짜</th><th>종목</th><th>유형</th><th>수량</th>
-          <th>가격</th><th>거래금액</th><th>실현손익</th><th>메모</th><th></th>
+          <th class="hide-mob">가격</th><th>거래금액</th><th>실현손익</th><th class="hide-mob">메모</th><th></th>
         </tr></thead>
         <tbody id="trades-tbody"></tbody>
       </table>
@@ -352,7 +369,8 @@ tbody tr:hover td{background:rgba(59,130,246,.04);}
       <input type="file" id="import-file" accept=".json" style="display:none" onchange="importTrades(event)">
     </div>
     <div style="font-size:0.72rem;color:var(--text-muted)">
-      💡 내보내기 → 구글 드라이브에 저장 · 다른 기기나 새 브라우저에서는 파일을 가져오기해서 동기화하세요.
+      💡 <b>폰 → PC 동기화:</b> 폰에서 내보내기 → 구글 드라이브에 저장 → PC 브라우저에서 가져오기<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;각 기기의 브라우저마다 별도 저장되므로, 새 기기 사용 시 가져오기가 필요합니다.
     </div>
   </div>
 
@@ -930,11 +948,11 @@ function renderTradeSection(){
       return `<tr>
         <td><div class="stock-name-cell"><div class="name">${h.name}</div><div class="ticker">${h.ticker}</div></div></td>
         <td>${pos.qty.toLocaleString()}주</td>
-        <td>${fmt(Math.round(pos.avgPrice))}원</td>
-        <td class="${priceCls(p?.change||0)}">${price?fmt(Math.round(price))+'원':'—'}</td>
+        <td class="hide-mob">${fmt(Math.round(pos.avgPrice))}원</td>
+        <td class="hide-mob ${priceCls(p?.change||0)}">${price?fmt(Math.round(price))+'원':'—'}</td>
         <td class="${unr!=null?pnlCls(unr):''}">${unr!=null?(unr>=0?'+':'')+fmt(Math.round(unr))+'원':'—'}</td>
         <td class="${pct!=null?pnlCls(pct):''}">${pct!=null?fmtP(pct):'—'}</td>
-        <td class="${pos.realizedPnl?pnlCls(pos.realizedPnl):''}">${pos.realizedPnl?(pos.realizedPnl>=0?'+':'')+fmt(Math.round(pos.realizedPnl))+'원':'—'}</td>
+        <td class="hide-mob ${pos.realizedPnl?pnlCls(pos.realizedPnl):''}">${pos.realizedPnl?(pos.realizedPnl>=0?'+':'')+fmt(Math.round(pos.realizedPnl))+'원':'—'}</td>
       </tr>`;
     }).filter(Boolean).join('');
     hTbody.innerHTML=rows||`<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:20px">
@@ -956,14 +974,14 @@ function renderTradeSection(){
           ?`<span class="${pnlCls(t.realizedPnl)}">${t.realizedPnl>=0?'+':''}${fmt(Math.round(t.realizedPnl))}원</span>`
           :'—';
         return `<tr>
-          <td style="white-space:nowrap">${t.date}</td>
+          <td style="white-space:nowrap;font-size:0.78rem">${t.date}</td>
           <td><span style="font-weight:600">${name}</span></td>
           <td><span class="tag-${t.type}">${t.type==='buy'?'매수':'매도'}</span></td>
           <td>${t.qty.toLocaleString()}주</td>
-          <td>${fmt(t.price)}원</td>
+          <td class="hide-mob">${fmt(t.price)}원</td>
           <td>${fmt(Math.round(amt))}원</td>
           <td>${rHtml}</td>
-          <td style="color:var(--text-muted);font-size:0.77rem">${t.memo||'—'}</td>
+          <td class="hide-mob" style="color:var(--text-muted);font-size:0.77rem">${t.memo||'—'}</td>
           <td><button class="del-btn" onclick="deleteTrade(${t.id})" title="삭제">🗑</button></td>
         </tr>`;
       }).join('');
