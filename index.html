@@ -94,15 +94,7 @@ tbody tr:hover td{background:rgba(59,130,246,.04);}
 .sl-ok{color:var(--text-muted);}.sl-warn{background:rgba(245,158,11,.1);color:var(--yellow);}.sl-danger{background:rgba(239,68,68,.1);color:var(--red);}
 .sl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
 .dot-ok{background:var(--border-light);}.dot-warn{background:var(--yellow);}.dot-danger{background:var(--red);box-shadow:0 0 5px var(--red);}
-.settings-panel{display:none;background:var(--bg-secondary);border:1px solid var(--accent);border-radius:12px;padding:18px;margin-bottom:16px;}
-.settings-panel.open{display:block;}
-.settings-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;margin-top:12px;}
-.settings-row{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--bg-card);border-radius:8px;}
 .s-name{flex:1;font-size:0.83rem;font-weight:600;}
-.s-group{display:flex;flex-direction:column;align-items:flex-end;gap:2px;}
-.s-input{width:88px;background:var(--bg-primary);border:1px solid var(--border-light);border-radius:5px;padding:5px 8px;color:var(--text-primary);font-size:0.78rem;text-align:right;}
-.s-input:focus{outline:none;border-color:var(--accent);}
-.s-lbl{font-size:0.6rem;color:var(--text-muted);}
 .search-box{display:flex;gap:10px;margin-bottom:20px;}
 .search-input{flex:1;background:var(--bg-card);border:1px solid var(--border-light);border-radius:10px;padding:12px 16px;color:var(--text-primary);font-size:0.93rem;outline:none;transition:border-color .2s;}
 .search-input:focus{border-color:var(--accent);}
@@ -235,20 +227,10 @@ tbody tr:hover td{background:rgba(59,130,246,.04);}
     <button class="btn btn-blue" onclick="marketUpdate(event)">📈 시장 업데이트</button>
     <button class="btn btn-outline" onclick="earningsUpdate(event)">📊 재무 새로고침</button>
     <span style="font-size:0.72rem;color:var(--text-muted)">DART: <span id="fin-date">—</span></span>
-    <button class="btn btn-outline" onclick="toggleSettings()">⚙️ 보유 종목 설정</button>
   </div>
 
   <div class="info-banner">
     ℹ️ <span><b>주가 기준:</b> <span id="price-date">로딩 중</span> &nbsp;|&nbsp; <b>실적 기준:</b> 2026년 1Q (2026.04.25) &nbsp;|&nbsp; 다음 실적 발표: <b>2026.07.25 예정</b></span>
-  </div>
-
-  <div class="settings-panel" id="settings-panel">
-    <div class="card-title">⚙️ 보유 종목 설정 — 평균 매수가 &amp; 수량</div>
-    <div class="settings-grid" id="settings-grid"></div>
-    <div style="margin-top:14px;display:flex;gap:10px;">
-      <button class="btn btn-green" onclick="saveSettings()">✅ 저장</button>
-      <button class="btn btn-outline" onclick="toggleSettings()">닫기</button>
-    </div>
   </div>
 
   <div class="card">
@@ -478,39 +460,10 @@ function switchTab(id){
   document.querySelectorAll('.tab')[idx].classList.add('active');
 }
 
-function buildSettingsGrid(){
-  document.getElementById('settings-grid').innerHTML=HOLDINGS.map(h=>{
-    const s=state.settings[h.id];
-    return `<div class="settings-row">
-      <span class="s-name">${h.name}</span>
-      <div class="s-group">
-        <input class="s-input" id="sp-${h.id}" type="number" placeholder="0" value="${s.avgPrice||''}">
-        <span class="s-lbl">평균매수가(원)</span>
-      </div>
-      <div class="s-group">
-        <input class="s-input" id="sq-${h.id}" type="number" placeholder="0" value="${s.qty||''}">
-        <span class="s-lbl">보유수량(주)</span>
-      </div>
-    </div>`;
-  }).join('');
-}
 
-function toggleSettings(){
-  const p=document.getElementById('settings-panel');
-  if(!p.classList.contains('open')){buildSettingsGrid();p.classList.add('open');}
   else p.classList.remove('open');
 }
 
-function saveSettings(){
-  HOLDINGS.forEach(h=>{
-    const p=parseFloat(document.getElementById('sp-'+h.id)?.value)||0;
-    const q=parseInt(document.getElementById('sq-'+h.id)?.value)||0;
-    state.settings[h.id]={avgPrice:p,qty:q};
-  });
-  document.getElementById('settings-panel').classList.remove('open');
-  renderAll();
-  alert('✅ 저장되었습니다.');
-}
 
 async function fetchPrices(){
   // prices.json은 GitHub Actions가 매일 자동 업데이트
@@ -855,6 +808,28 @@ function scrollToCard(id){
 // 💹 거래 관리 (Trade Management) — localStorage + JSON 백업
 // ═══════════════════════════════════════════════════════════════════════
 
+
+// ── 기본 거래 데이터 (최초 접속 시 자동 로드) ──────────────────────────
+const DEFAULT_TRADES = [
+  // 매수 내역 (평균단가 기준 초기 등록 · 날짜는 실제 매수일로 수정 가능)
+  {id:1000000001,date:"2025-01-01",stockId:"hynix",    type:"buy",qty:15, price:551733,  memo:"초기 평균단가 등록"},
+  {id:1000000002,date:"2025-01-01",stockId:"samsung",  type:"buy",qty:87, price:172167,  memo:"초기 평균단가 등록"},
+  {id:1000000003,date:"2025-01-01",stockId:"hyundai",  type:"buy",qty:20, price:504000,  memo:"초기 평균단가 등록"},
+  {id:1000000004,date:"2025-01-01",stockId:"ls",       type:"buy",qty:91, price:288500,  memo:"초기 평균단가 등록"},
+  {id:1000000005,date:"2025-01-01",stockId:"hanwha",   type:"buy",qty:240,price:123200,  memo:"초기 평균단가 등록"},
+  {id:1000000006,date:"2025-01-01",stockId:"intellian",type:"buy",qty:2,  price:138650,  memo:"초기 평균단가 등록"},
+  {id:1000000007,date:"2025-01-01",stockId:"hyosung",  type:"buy",qty:7,  price:4150000, memo:"초기 평균단가 등록"},
+  // 2026-05-21 매도
+  {id:2000000001,date:"2026-05-21",stockId:"hynix",  type:"sell",qty:15,price:1934748,memo:"전량 매도",realizedPnl:20745231},
+  {id:2000000002,date:"2026-05-21",stockId:"samsung",type:"sell",qty:87,price:297334, memo:"전량 매도",realizedPnl:10889528},
+];
+
+function initDefaultTrades(){
+  if(!localStorage.getItem('boss_trades')){
+    localStorage.setItem('boss_trades', JSON.stringify(DEFAULT_TRADES));
+    console.log('[거래관리] 기본 거래 데이터 초기화 완료');
+  }
+}
 function loadTrades(){
   try{return JSON.parse(localStorage.getItem('boss_trades')||'[]');}
   catch(e){return [];}
@@ -1087,6 +1062,7 @@ function importTrades(event){
 function renderAll(){renderSummary();renderCards();renderTradeSection();}
 
 async function init(){
+  initDefaultTrades();
   renderSectors(); renderAll();
   // 거래 관리 폼 초기화
   const tfStock=document.getElementById('tf-stock');
