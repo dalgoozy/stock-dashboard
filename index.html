@@ -149,6 +149,26 @@ tbody tr:hover td{background:rgba(59,130,246,.04);}
 .modal-close{float:right;background:none;border:none;color:var(--text-muted);font-size:1.1rem;cursor:pointer;margin-top:-4px;}
 ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--bg-primary);}::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:3px;}
 @media(max-width:768px){.main{padding:12px;}.tab{padding:11px 10px;font-size:0.78rem;}.clusters{flex-wrap:wrap;}thead th,tbody td{padding:8px 6px;}}
+
+.trade-stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+@media(max-width:768px){.trade-stat-grid{grid-template-columns:repeat(2,1fr);}}
+.trade-stat{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center;}
+.trade-stat .ts-val{font-size:1.2rem;font-weight:700;margin-bottom:4px;}
+.trade-stat .ts-lbl{font-size:0.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px;}
+.trade-form-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:8px;margin-bottom:12px;}
+.tf-group{display:flex;flex-direction:column;gap:4px;}
+.tf-label{font-size:0.67rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.3px;}
+.tf-input,.tf-select{background:var(--bg-primary);border:1px solid var(--border-light);border-radius:7px;padding:8px 10px;color:var(--text-primary);font-size:0.85rem;outline:none;width:100%;}
+.tf-input:focus,.tf-select:focus{border-color:var(--accent);}
+.tf-select{cursor:pointer;}
+.btn-buy{background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.3);}
+.btn-buy:hover{background:rgba(239,68,68,.25);}
+.btn-sell{background:rgba(96,165,250,.15);color:#60a5fa;border:1px solid rgba(96,165,250,.3);}
+.btn-sell:hover{background:rgba(96,165,250,.25);}
+.tag-buy{display:inline-block;background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.3);padding:2px 8px;border-radius:12px;font-size:0.68rem;font-weight:700;}
+.tag-sell{display:inline-block;background:rgba(96,165,250,.15);color:#60a5fa;border:1px solid rgba(96,165,250,.3);padding:2px 8px;border-radius:12px;font-size:0.68rem;font-weight:700;}
+.del-btn{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:0.85rem;padding:3px 6px;border-radius:4px;transition:all .15s;}
+.del-btn:hover{color:var(--red);background:rgba(239,68,68,.1);}
 </style>
 </head>
 <body>
@@ -170,6 +190,7 @@ tbody tr:hover td{background:rgba(59,130,246,.04);}
     <button class="tab" onclick="switchTab('s1')">🔍 종목 검색</button>
     <button class="tab active" onclick="switchTab('s2')">💼 보유 종목</button>
     <button class="tab" onclick="switchTab('s3')">📡 섹터 스크리닝</button>
+    <button class="tab" onclick="switchTab('s4')">💹 거래 관리</button>
   </div>
 </div>
 
@@ -235,6 +256,105 @@ tbody tr:hover td{background:rgba(59,130,246,.04);}
   </div>
   <div class="sector-grid" id="sector-grid"></div>
 </div>
+
+</div>
+
+<!-- 섹션 4: 거래 관리 -->
+<div id="s4" class="section">
+
+  <div class="trade-stat-grid">
+    <div class="trade-stat">
+      <div class="ts-val" id="ts-invested">—</div>
+      <div class="ts-lbl">현재 투자금</div>
+    </div>
+    <div class="trade-stat">
+      <div class="ts-val" id="ts-value">—</div>
+      <div class="ts-lbl">현재 평가액</div>
+    </div>
+    <div class="trade-stat">
+      <div class="ts-val" id="ts-unrealized">—</div>
+      <div class="ts-lbl">미실현 손익</div>
+    </div>
+    <div class="trade-stat">
+      <div class="ts-val" id="ts-realized">—</div>
+      <div class="ts-lbl">실현 손익</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">✏️ 거래 입력</div>
+    <div class="trade-form-grid">
+      <div class="tf-group">
+        <label class="tf-label">날짜</label>
+        <input class="tf-input" type="date" id="tf-date">
+      </div>
+      <div class="tf-group">
+        <label class="tf-label">종목</label>
+        <select class="tf-select" id="tf-stock"></select>
+      </div>
+      <div class="tf-group">
+        <label class="tf-label">유형</label>
+        <select class="tf-select" id="tf-type">
+          <option value="buy">매수 📈</option>
+          <option value="sell">매도 📉</option>
+        </select>
+      </div>
+      <div class="tf-group">
+        <label class="tf-label">수량 (주)</label>
+        <input class="tf-input" type="number" id="tf-qty" placeholder="0" min="1">
+      </div>
+      <div class="tf-group">
+        <label class="tf-label">거래가격 (원)</label>
+        <input class="tf-input" type="number" id="tf-price" placeholder="0" min="0">
+      </div>
+      <div class="tf-group">
+        <label class="tf-label">메모 (선택)</label>
+        <input class="tf-input" type="text" id="tf-memo" placeholder="예: 1차 분할 매수">
+      </div>
+    </div>
+    <div class="btn-group" style="margin-bottom:0">
+      <button class="btn btn-buy" onclick="addTrade('buy')">📈 매수 추가</button>
+      <button class="btn btn-sell" onclick="addTrade('sell')">📉 매도 추가</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💼 현재 보유 현황</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>종목</th><th>수량</th><th>평균단가</th><th>현재가</th>
+          <th>미실현 손익</th><th>수익률</th><th>실현 손익</th>
+        </tr></thead>
+        <tbody id="holdings-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📋 거래 내역</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>날짜</th><th>종목</th><th>유형</th><th>수량</th>
+          <th>가격</th><th>거래금액</th><th>실현손익</th><th>메모</th><th></th>
+        </tr></thead>
+        <tbody id="trades-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💾 백업 / 복원 (구글 드라이브)</div>
+    <div class="btn-group" style="margin-bottom:8px">
+      <button class="btn btn-outline" onclick="exportTrades()">⬇️ JSON 내보내기</button>
+      <button class="btn btn-outline" onclick="document.getElementById('import-file').click()">⬆️ JSON 가져오기</button>
+      <input type="file" id="import-file" accept=".json" style="display:none" onchange="importTrades(event)">
+    </div>
+    <div style="font-size:0.72rem;color:var(--text-muted)">
+      💡 내보내기 → 구글 드라이브에 저장 · 다른 기기나 새 브라우저에서는 파일을 가져오기해서 동기화하세요.
+    </div>
+  </div>
 
 </div>
 
@@ -336,7 +456,7 @@ function switchTab(id){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  const idx={s1:0,s2:1,s3:2}[id];
+  const idx={s1:0,s2:1,s3:2,s4:3}[id];
   document.querySelectorAll('.tab')[idx].classList.add('active');
 }
 
@@ -712,10 +832,257 @@ function scrollToCard(id){
   if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-function renderAll(){renderSummary();renderCards();}
+
+// ═══════════════════════════════════════════════════════════════════════
+// 💹 거래 관리 (Trade Management) — localStorage + JSON 백업
+// ═══════════════════════════════════════════════════════════════════════
+
+function loadTrades(){
+  try{return JSON.parse(localStorage.getItem('boss_trades')||'[]');}
+  catch(e){return [];}
+}
+function saveTrades(trades){
+  localStorage.setItem('boss_trades',JSON.stringify(trades));
+}
+
+// 평균단가법으로 현재 포지션 계산
+function calcHoldings(trades){
+  const h={};
+  HOLDINGS.forEach(s=>{h[s.id]={qty:0,avgPrice:0,cost:0,realizedPnl:0};});
+  const sorted=[...trades].sort((a,b)=>a.date.localeCompare(b.date));
+  sorted.forEach(t=>{
+    if(!h[t.stockId])h[t.stockId]={qty:0,avgPrice:0,cost:0,realizedPnl:0};
+    const pos=h[t.stockId];
+    if(t.type==='buy'){
+      const newCost=pos.cost+t.price*t.qty;
+      const newQty=pos.qty+t.qty;
+      pos.avgPrice=newQty>0?newCost/newQty:0;
+      pos.qty=newQty;
+      pos.cost=newCost;
+    } else {
+      const realized=(t.price-pos.avgPrice)*t.qty;
+      pos.realizedPnl+=realized;
+      pos.qty=Math.max(0,pos.qty-t.qty);
+      pos.cost=pos.qty*pos.avgPrice;
+    }
+  });
+  return h;
+}
+
+function renderTradeSection(){
+  const trades=loadTrades();
+  const holdings=calcHoldings(trades);
+
+  // 거래 데이터가 있으면 state.settings 덮어쓰기 (보유 종목 탭에도 반영)
+  HOLDINGS.forEach(h=>{
+    const pos=holdings[h.id];
+    if(pos&&pos.qty>0){
+      state.settings[h.id]={avgPrice:Math.round(pos.avgPrice),qty:pos.qty};
+    } else if(pos&&pos.qty===0&&trades.some(t=>t.stockId===h.id)){
+      state.settings[h.id]={avgPrice:0,qty:0};
+    }
+  });
+
+  // ── 요약 카드 ──
+  let totalCost=0, currentValue=0, totalRealized=0;
+  HOLDINGS.forEach(h=>{
+    const pos=holdings[h.id];
+    if(!pos)return;
+    const p=state.prices[h.ticker];
+    const price=p?.price;
+    totalCost+=pos.cost;
+    totalRealized+=pos.realizedPnl;
+    if(price&&pos.qty>0)currentValue+=price*pos.qty;
+  });
+  const unrealized=currentValue-totalCost;
+
+  const tsInv=document.getElementById('ts-invested');
+  const tsVal=document.getElementById('ts-value');
+  const tsUnr=document.getElementById('ts-unrealized');
+  const tsReal=document.getElementById('ts-realized');
+
+  if(tsInv)tsInv.textContent=totalCost>0?fmt(Math.round(totalCost))+'원':'—';
+  if(tsVal)tsVal.textContent=currentValue>0?fmt(Math.round(currentValue))+'원':'—';
+  if(tsUnr){
+    const pct=totalCost>0?(unrealized/totalCost*100):null;
+    tsUnr.textContent=totalCost>0
+      ?(unrealized>=0?'+':'')+fmt(Math.round(unrealized))+'원'+(pct!=null?' ('+fmtP(pct)+')':'')
+      :'—';
+    tsUnr.className='ts-val'+(totalCost>0?(unrealized>0?' pnl-pos':unrealized<0?' pnl-neg':''):'');
+  }
+  if(tsReal){
+    tsReal.textContent=totalRealized!==0
+      ?(totalRealized>=0?'+':'')+fmt(Math.round(totalRealized))+'원'
+      :'0원';
+    tsReal.className='ts-val'+(totalRealized>0?' pnl-pos':totalRealized<0?' pnl-neg':'');
+  }
+
+  // ── 현재 보유 현황 테이블 ──
+  const hTbody=document.getElementById('holdings-tbody');
+  if(hTbody){
+    const rows=HOLDINGS.map(h=>{
+      const pos=holdings[h.id];
+      if(!pos||pos.qty===0)return '';
+      const p=state.prices[h.ticker];
+      const price=p?.price;
+      const unr=price?((price-pos.avgPrice)*pos.qty):null;
+      const pct=pos.avgPrice>0&&price?((price-pos.avgPrice)/pos.avgPrice*100):null;
+      return `<tr>
+        <td><div class="stock-name-cell"><div class="name">${h.name}</div><div class="ticker">${h.ticker}</div></div></td>
+        <td>${pos.qty.toLocaleString()}주</td>
+        <td>${fmt(Math.round(pos.avgPrice))}원</td>
+        <td class="${priceCls(p?.change||0)}">${price?fmt(Math.round(price))+'원':'—'}</td>
+        <td class="${unr!=null?pnlCls(unr):''}">${unr!=null?(unr>=0?'+':'')+fmt(Math.round(unr))+'원':'—'}</td>
+        <td class="${pct!=null?pnlCls(pct):''}">${pct!=null?fmtP(pct):'—'}</td>
+        <td class="${pos.realizedPnl?pnlCls(pos.realizedPnl):''}">${pos.realizedPnl?(pos.realizedPnl>=0?'+':'')+fmt(Math.round(pos.realizedPnl))+'원':'—'}</td>
+      </tr>`;
+    }).filter(Boolean).join('');
+    hTbody.innerHTML=rows||`<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:20px">
+      거래를 입력하면 보유 현황이 표시됩니다</td></tr>`;
+  }
+
+  // ── 거래 내역 테이블 (최신순) ──
+  const tTbody=document.getElementById('trades-tbody');
+  if(tTbody){
+    if(trades.length===0){
+      tTbody.innerHTML=`<tr><td colspan="9" style="text-align:center;color:var(--text-muted);padding:20px">
+        거래 내역이 없습니다</td></tr>`;
+    } else {
+      const sorted=[...trades].sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);
+      tTbody.innerHTML=sorted.map(t=>{
+        const name=HOLDINGS.find(h=>h.id===t.stockId)?.name||t.stockId;
+        const amt=t.price*t.qty;
+        const rHtml=t.type==='sell'&&t.realizedPnl!=null
+          ?`<span class="${pnlCls(t.realizedPnl)}">${t.realizedPnl>=0?'+':''}${fmt(Math.round(t.realizedPnl))}원</span>`
+          :'—';
+        return `<tr>
+          <td style="white-space:nowrap">${t.date}</td>
+          <td><span style="font-weight:600">${name}</span></td>
+          <td><span class="tag-${t.type}">${t.type==='buy'?'매수':'매도'}</span></td>
+          <td>${t.qty.toLocaleString()}주</td>
+          <td>${fmt(t.price)}원</td>
+          <td>${fmt(Math.round(amt))}원</td>
+          <td>${rHtml}</td>
+          <td style="color:var(--text-muted);font-size:0.77rem">${t.memo||'—'}</td>
+          <td><button class="del-btn" onclick="deleteTrade(${t.id})" title="삭제">🗑</button></td>
+        </tr>`;
+      }).join('');
+    }
+  }
+}
+
+function addTrade(type){
+  const dateEl=document.getElementById('tf-date');
+  const stockEl=document.getElementById('tf-stock');
+  const qtyEl=document.getElementById('tf-qty');
+  const priceEl=document.getElementById('tf-price');
+  const memoEl=document.getElementById('tf-memo');
+
+  const date=dateEl.value;
+  const stockId=stockEl.value;
+  const qty=parseInt(qtyEl.value)||0;
+  const price=parseFloat(priceEl.value)||0;
+  const memo=memoEl.value.trim();
+
+  if(!date){alert('날짜를 입력해주세요.');dateEl.focus();return;}
+  if(!stockId){alert('종목을 선택해주세요.');return;}
+  if(qty<=0){alert('수량을 입력해주세요 (1 이상).');qtyEl.focus();return;}
+  if(price<=0){alert('가격을 입력해주세요.');priceEl.focus();return;}
+
+  const trades=loadTrades();
+  let realizedPnl=null;
+
+  if(type==='sell'){
+    const h=calcHoldings(trades);
+    const pos=h[stockId];
+    if(!pos||pos.qty<qty){
+      alert(`보유 수량(${pos?pos.qty:0}주)이 부족합니다.`);
+      return;
+    }
+    if(pos.avgPrice>0) realizedPnl=(price-pos.avgPrice)*qty;
+  }
+
+  const newTrade={id:Date.now(),date,stockId,type,qty,price,memo};
+  if(realizedPnl!=null) newTrade.realizedPnl=realizedPnl;
+
+  trades.push(newTrade);
+  saveTrades(trades);
+
+  qtyEl.value='';
+  priceEl.value='';
+  memoEl.value='';
+
+  renderTradeSection();
+  renderAll();
+
+  const name=HOLDINGS.find(h=>h.id===stockId)?.name||stockId;
+  const typeStr=type==='buy'?'매수':'매도';
+  const msg='✅ '+name+' '+typeStr+' '+qty.toLocaleString()+'주 @ '+fmt(price)+'원'
+    +(realizedPnl!=null?'\n실현손익: '+(realizedPnl>=0?'+':'')+fmt(Math.round(realizedPnl))+'원':'');
+  alert(msg);
+}
+
+function deleteTrade(id){
+  if(!confirm('이 거래 내역을 삭제하시겠습니까?'))return;
+  saveTrades(loadTrades().filter(t=>t.id!==id));
+  renderTradeSection();
+  renderAll();
+}
+
+function exportTrades(){
+  const trades=loadTrades();
+  if(trades.length===0){alert('저장된 거래 내역이 없습니다.');return;}
+  const blob=new Blob(
+    [JSON.stringify({version:1,exported:new Date().toISOString(),trades},null,2)],
+    {type:'application/json'}
+  );
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download='boss_trades_'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function importTrades(event){
+  const file=event.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      const incoming=Array.isArray(data)?data:(data.trades||[]);
+      if(!Array.isArray(incoming)||incoming.length===0)throw new Error('거래 데이터를 찾을 수 없습니다');
+      if(!confirm(incoming.length+'개 거래 내역을 가져오시겠습니까?\n(기존 데이터에 추가됩니다)'))return;
+      const existing=loadTrades();
+      const existingIds=new Set(existing.map(t=>t.id));
+      const newItems=incoming.filter(t=>!existingIds.has(t.id));
+      saveTrades([...existing,...newItems]);
+      renderTradeSection();renderAll();
+      alert('✅ '+newItems.length+'개 거래 내역이 추가되었습니다.');
+    }catch(err){alert('❌ 파일 오류: '+err.message);}
+  };
+  reader.readAsText(file);
+  event.target.value='';
+}
+
+function renderAll(){renderSummary();renderCards();renderTradeSection();}
 
 async function init(){
   renderSectors(); renderAll();
+  // 거래 관리 폼 초기화
+  const tfStock=document.getElementById('tf-stock');
+  if(tfStock){
+    tfStock.innerHTML=HOLDINGS.map(h=>`<option value="${h.id}">${h.name}</option>`).join('');
+  }
+  const tfDate=document.getElementById('tf-date');
+  if(tfDate){
+    const today=new Date();
+    const kst=new Date(today.getTime()+9*3600000);
+    tfDate.value=kst.toISOString().slice(0,10);
+  }
+  renderTradeSection();
+
   await Promise.all([
     fetchPrices().then(ok=>{ if(ok) renderAll(); }),
     fetchSectors(),
