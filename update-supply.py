@@ -35,6 +35,9 @@ for ticker, name in STOCKS.items():
             result[ticker] = {"name": name, "foreign_5d": 0, "institution_5d": 0, "days": []}
             continue
 
+        # 컬럼명 확인 (디버그)
+        print(f"  [{name}] 컬럼: {list(df.columns)}")
+
         df5 = df.tail(5)
         days = []
         foreign_total = 0
@@ -47,14 +50,19 @@ for ticker, name in STOCKS.items():
             foreign_net = 0
             institution_net = 0
 
-            # pykrx 컬럼명은 버전마다 다를 수 있어 키워드 매칭으로 안전하게 추출
             for col, val in row_d.items():
                 cs = str(col)
                 try:
                     v = int(val) if val == val else 0
                 except Exception:
                     v = 0
-                if "외국인" in cs and "순" in cs:
+                # pykrx 컬럼: "외국인합계" (기타외국인 제외), "기관합계"
+                if cs == "외국인합계":
+                    foreign_net = v
+                elif cs == "기관합계":
+                    institution_net = v
+                # 혹시 "순" 포함 버전도 대응
+                elif "외국인" in cs and "순" in cs and "기타" not in cs:
                     foreign_net = v
                 elif "기관" in cs and "순" in cs and "외국인" not in cs:
                     institution_net = v
