@@ -641,6 +641,24 @@ function renderCards(){
       else if(pnlPct<=-15){sl1c='sl-warn';sl1d='dot-warn';}
     }
     if(pos!=null&&pos<=5){sl3c='sl-danger';sl3d='dot-danger';}
+    // 수급 HTML 미리 계산 (백틱 중첩 방지)
+    const _sTicker=h.ticker.replace(/\.(KS|KQ)$/,'');
+    const _sMap={'000660':'000660','005930':'005930','005380':'005380','010120':'010120','042660':'042660','189300':'189300','298040':'298040'};
+    const _sd=supplyData[_sMap[_sTicker]||_sTicker];
+    let supplyHtml='';
+    if(_sd&&(_sd.foreign_5d||_sd.institution_5d)){
+      const _fv=_sd.foreign_5d||0,_iv=_sd.institution_5d||0;
+      const _fC=_fv>0?'supply-pos':_fv<0?'supply-neg':'supply-flat';
+      const _iC=_iv>0?'supply-pos':_iv<0?'supply-neg':'supply-flat';
+      const _fA=_fv>0?'▲':_fv<0?'▼':'—',_iA=_iv>0?'▲':_iv<0?'▼':'—';
+      const _fB=n=>Math.abs(n)>=1e8?(n/1e8).toFixed(1)+'억':(n/1e4).toFixed(0)+'만';
+      supplyHtml='<div class="supply-row">'
+        +'<div class="supply-item"><span class="supply-lbl">외국인 5일</span>'
+        +'<span class="supply-val '+_fC+'">'+(_fv>=0?'+':'')+_fB(_fv)+' <span class="supply-arrow">'+_fA+'</span></span></div>'
+        +'<div class="supply-item"><span class="supply-lbl">기관 5일</span>'
+        +'<span class="supply-val '+_iC+'">'+(_iv>=0?'+':'')+_fB(_iv)+' <span class="supply-arrow">'+_iA+'</span></span></div>'
+        +'</div>';
+    }
     return `<div class="stock-card" id="card-${h.id}">
       <div class="stock-card-header">
         <div class="sc-left">
@@ -665,29 +683,6 @@ function renderCards(){
       <div class="sc-body">
         <div class="sc-box">
           <div class="sc-box-title">📊 핵심 재무 지표</div>
-          ${(()=>{
-            const sc=h.ticker.replace(/\.(KS|KQ)$/,'');
-            const fin=(financialsData.stocks||{})[sc]||{};
-            const liveEPS=fin.eps;
-            const liveBPS=fin.bps;
-            const liveROE=fin.roe!=null?fin.roe:h.roe;
-            const livePER=(price&&liveEPS&&liveEPS>0)?+(price/liveEPS).toFixed(1):h.per;
-            const livePBR=(price&&liveBPS&&liveBPS>0)?+(price/liveBPS).toFixed(2):h.pbr;
-            const perSrc=liveEPS?'실시간':'기준가';
-            const pbrSrc=liveBPS?'실시간':'기준가';
-            const roeSrc=fin.roe!=null?'DART':'기준가';
-            return `<div class="metrics-mini">
-              <div class="metric-m"><div class="m-val">${livePER?livePER+'배':'—'}</div>
-                <div class="m-lbl" onclick="showTooltip('PER')">PER ℹ</div>
-                <div class="m-sub" style="font-size:0.56rem">${livePER?`<span style="color:var(--accent)">${perSrc}</span> ${h.perVsAvg}`:h.perVsAvg}</div></div>
-              <div class="metric-m"><div class="m-val">${livePBR?livePBR+'배':'—'}</div>
-                <div class="m-lbl" onclick="showTooltip('PBR')">PBR ℹ</div>
-                <div class="m-sub" style="font-size:0.56rem"><span style="color:var(--accent)">${pbrSrc}</span> ${livePBR&&livePBR<1?'🟢 1배 이하':livePBR&&livePBR<2?'🟡 1~2배':livePBR?'🔴 2배 초과':'—'}</div></div>
-              <div class="metric-m"><div class="m-val">${liveROE!=null?liveROE+'%':'—'}</div>
-                <div class="m-lbl" onclick="showTooltip('ROE')">ROE ℹ</div>
-                <div class="m-sub" style="font-size:0.56rem"><span style="color:var(--accent)">${roeSrc}</span> ${liveROE!=null&&liveROE>=15?'🟢 우수':liveROE!=null&&liveROE>=10?'🟡 양호':liveROE!=null?'🔴 낮음':'—'}</div></div>
-            </div>`;
-          })()}
         </div>
         <div class="sc-box">
           <div class="sc-box-title">💼 내 포지션</div>
@@ -725,6 +720,7 @@ function renderCards(){
           </div>
         </div>\`;
       })()}
+      ${supplyHtml}
       <div class="sc-box" style="margin-bottom:10px">
         <div class="sc-box-title">📍 52주 가격 위치</div>
         ${pos!=null?gaugeHTML(pos,high,low):'<span style="color:var(--text-muted);font-size:0.8rem">📈 시장 업데이트 후 표시됩니다</span>'}
