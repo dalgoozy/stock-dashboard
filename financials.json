@@ -1,45 +1,59 @@
 {
-  "updated": "2026.05.19 00:05 KST",
+  "updated": "2026.05.23 23:40 KST",
   "report_year": "2025",
   "stocks": {
     "000660": {
       "eps": 62044.0,
+      "eps_prev": 28732.0,
+      "eps_growth": 115.9,
       "bps": null,
       "roe": null,
       "dps": null
     },
     "005930": {
       "eps": 6605.0,
+      "eps_prev": 4950.0,
+      "eps_growth": 33.4,
       "bps": null,
       "roe": null,
       "dps": null
     },
     "005380": {
       "eps": 37851.0,
+      "eps_prev": 47369.0,
+      "eps_growth": -20.1,
       "bps": null,
       "roe": null,
       "dps": null
     },
     "010120": {
       "eps": null,
+      "eps_prev": 8078.0,
+      "eps_growth": null,
       "bps": null,
       "roe": null,
       "dps": null
     },
     "042660": {
       "eps": 4007.0,
+      "eps_prev": 1648.0,
+      "eps_growth": 143.1,
       "bps": null,
       "roe": null,
       "dps": null
     },
     "189300": {
       "eps": 724.0,
+      "eps_prev": -288.0,
+      "eps_growth": null,
       "bps": null,
       "roe": null,
       "dps": null
     },
     "298040": {
       "eps": 55832.0,
+      "eps_prev": 23909.0,
+      "eps_growth": 133.5,
       "bps": null,
       "roe": null,
       "dps": null
