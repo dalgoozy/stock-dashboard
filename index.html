@@ -460,11 +460,6 @@ function switchTab(id){
   document.querySelectorAll('.tab')[idx].classList.add('active');
 }
 
-
-  else p.classList.remove('open');
-}
-
-
 async function fetchPrices(){
   // prices.json은 GitHub Actions가 매일 자동 업데이트
   try {
@@ -803,11 +798,9 @@ function scrollToCard(id){
   if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-
 // ═══════════════════════════════════════════════════════════════════════
 // 💹 거래 관리 (Trade Management) — localStorage + JSON 백업
 // ═══════════════════════════════════════════════════════════════════════
-
 
 // ── 기본 거래 데이터 (최초 접속 시 자동 로드) ──────────────────────────
 const DEFAULT_TRADES = [
