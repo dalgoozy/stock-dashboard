@@ -1130,8 +1130,7 @@ function requestTradeReview(){
   // 종목별 손익 요약
   const pnlSummary=Object.entries(pnlByStock).map(([name,v])=>
     `${name}: ${v.realized>=0?'+':''}${fmt(Math.round(v.realized))}원 (${v.sellCount}회 매도)`
-  ).join('
-');
+  ).join('\n');
 
   // 전략 데이터
   const strategyRef=`[현재 투자 전략]
@@ -1153,8 +1152,7 @@ ${avgHolding!==null?`- 평균 보유 기간: 약 ${avgHolding}일`:''}
 ${pnlSummary||'매도 내역 없음'}
 
 [현재 보유 포지션]
-${currentPositions.length>0?currentPositions.join('
-'):'현재 보유 종목 없음'}
+${currentPositions.length>0?currentPositions.join('\n'):'현재 보유 종목 없음'}
 
 ${strategyRef}
 
