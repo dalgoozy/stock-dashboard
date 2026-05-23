@@ -479,6 +479,9 @@ const TOOLTIPS={
   'ROE':'ROE (자기자본이익률, Return on Equity)\n\n순이익 ÷ 자기자본입니다.\n주주가 맡긴 돈으로 얼마나 벌었는지 보여주는 수익성 지표입니다.\n\n5년 평균 ROE가 업종 평균을 꾸준히 웃돌면 Moat(경쟁 우위) 신호입니다.\n\n⚠️ ROE가 높아도 부채 증가가 원인이면 레버리지 왜곡입니다.',
   'Moat':'Moat (경제적 해자, Economic Moat)\n\n워런 버핏이 사용한 개념입니다.\n경쟁자가 넘기 어려운 구조적 우위를 의미합니다.\n\n종류: 브랜드 / 전환비용 / 네트워크 / 원가우위 / 특허\n\nMoat가 강할수록 사이클 타이밍이 덜 정밀해도 됩니다.\nMoat가 없는 종목은 타이밍이 전부입니다.',
   'FCF':'FCF (잉여현금흐름, Free Cash Flow)\n\n영업활동 현금흐름 - 설비투자(CAPEX)입니다.\n실제로 회사에 남는 현금을 나타냅니다.\n\n영업이익이 높아도 FCF가 낮으면 이익 품질을 의심해야 합니다.\n3년 연속 FCF 플러스는 Moat 강도에 긍정적 신호입니다.',
+  'EPS':'EPS (주당순이익, Earnings Per Share)\n\n순이익 ÷ 발행 주식수입니다.\n주주 1주당 회사가 벌어들인 이익을 나타냅니다.\n\n예) EPS 5,000원 = 주식 1주가 1년에 5,000원의 이익을 창출\n\nEPS가 꾸준히 성장하는 기업이 좋은 기업입니다.\nPER = 주가 ÷ EPS 관계로 PER 계산의 핵심 재료입니다.',
+  'EPS성장':'EPS 성장률 (EPS Growth Rate)\n\n올해 EPS와 작년 EPS를 비교한 성장률입니다.\n\n예) 작년 EPS 1,000원 → 올해 1,300원이면 성장률 +30%\n\n+이면 이익이 늘고 있는 것, -이면 이익이 줄고 있는 것입니다.\n\n성장률이 높을수록 PEG가 낮아져 매력적인 투자 대상이 됩니다.\n단, 일시적 요인(자산 매각, 일회성 이익)인지 확인이 필요합니다.',
+  'PEG':'PEG (주가이익성장비율, Price/Earnings to Growth)\n\nPER ÷ EPS 성장률입니다.\n성장성을 감안한 저평가 여부를 판단하는 지표입니다.\n\n예) PER 20배, EPS 성장률 40%이면 PEG = 0.5\n\n🟢 1 미만: 성장 대비 저평가 (매력적)\n🟡 1~1.5: 적정 수준\n🔴 1.5 초과: 성장 대비 고평가\n\n— 표시: EPS가 감소 중이면 계산 불가 (마이너스 성장에는 의미 없음)\n\n피터 린치가 강조한 지표로, PER만 보면 성장주가 비싸 보이는 함정을 보완합니다.',
 };
 
 let state={prices:{},settings:{}};
@@ -668,9 +671,9 @@ function renderCards(){
       +'<div class="fin-item"><div class="fin-lbl" onclick="showTooltip(\'PER\')">PER</div><div class="fin-val">'+(_per?_per+'배':'—')+'</div></div>'
       +'<div class="fin-item"><div class="fin-lbl" onclick="showTooltip(\'PBR\')">PBR</div><div class="fin-val">'+(_pbr?_pbr+'배':'—')+'</div></div>'
       +'<div class="fin-item"><div class="fin-lbl" onclick="showTooltip(\'ROE\')">ROE</div><div class="fin-val">'+(_roe?_roe+'%':'—')+'</div></div>'
-      +'<div class="fin-item"><div class="fin-lbl">EPS</div><div class="fin-val">'+(_eps?Math.round(_eps).toLocaleString()+'원':'—')+'</div></div>'
-      +'<div class="fin-item"><div class="fin-lbl">EPS성장</div><div class="fin-val '+(_epsG===null?'':_epsG>=0?'pnl-pos':'pnl-neg')+'">'+_fmtPct(_epsG)+'</div></div>'
-      +'<div class="fin-item peg-item"><div class="fin-lbl">PEG</div><div class="fin-val '+_pegCls+'" title="'+_pegTip+'">'+_pegLabel+'</div></div>'
+      +'<div class="fin-item"><div class="fin-lbl" onclick="showTooltip(\'EPS\')" style="cursor:pointer">EPS</div><div class="fin-val">'+(_eps?Math.round(_eps).toLocaleString()+'원':'—')+'</div></div>'
+      +'<div class="fin-item"><div class="fin-lbl" onclick="showTooltip(\'EPS성장\')" style="cursor:pointer">EPS성장</div><div class="fin-val '+(_epsG===null?'':_epsG>=0?'pnl-pos':'pnl-neg')+'">'+_fmtPct(_epsG)+'</div></div>'
+      +'<div class="fin-item peg-item"><div class="fin-lbl" onclick="showTooltip(\'PEG\')" style="cursor:pointer">PEG</div><div class="fin-val '+_pegCls+'" title="'+_pegTip+'">'+_pegLabel+'</div></div>'
       +'</div>';
     let supplyHtml='';
     if(_sd&&(_sd.foreign_5d||_sd.institution_5d)){
