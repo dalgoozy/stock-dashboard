@@ -156,8 +156,26 @@ def main():
 
             if prof or eps is not None:
                 found_year = year
-                data["roe"] = to_num(prof.get("ROE"))
-                data["dps"] = to_num(prof.get("주당배당금"))
+                # ROE: DART API 버전에 따라 키 이름이 다를 수 있음
+                roe_val = None
+                for k, v in prof.items():
+                    kl = k.lower()
+                    if 'roe' in kl or '자기자본' in k:
+                        roe_val = to_num(v)
+                        if roe_val is not None:
+                            print(f"  ROE 키 발견: '{k}' = {roe_val}")
+                            break
+                if roe_val is None:
+                    print(f"  [WARN] ROE 키 없음. 사용 가능한 키: {list(prof.keys())}")
+                data["roe"] = roe_val
+                # DPS: 주당배당금
+                dps_val = None
+                for k, v in prof.items():
+                    if '배당' in k or 'dps' in k.lower():
+                        dps_val = to_num(v)
+                        if dps_val is not None:
+                            break
+                data["dps"] = dps_val
                 if eps is not None:
                     data["eps"] = eps
 
