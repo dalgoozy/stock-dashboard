@@ -1,0 +1,47 @@
+{
+  "updated": "2026.05.23 22:33 KST",
+  "stocks": {
+    "000660": {
+      "name": "SK하이닉스",
+      "foreign_5d": 0,
+      "institution_5d": 0,
+      "days": []
+    },
+    "005930": {
+      "name": "삼성전자",
+      "foreign_5d": 0,
+      "institution_5d": 0,
+      "days": []
+    },
+    "005380": {
+      "name": "현대차",
+      "foreign_5d": 0,
+      "institution_5d": 0,
+      "days": []
+    },
+    "010120": {
+      "name": "LS ELECTRIC",
+      "foreign_5d": 0,
+      "institution_5d": 0,
+      "days": []
+    },
+    "042660": {
+      "name": "한화오션",
+      "foreign_5d": 0,
+      "institution_5d": 0,
+      "days": []
+    },
+    "189300": {
+      "name": "인텔리안테크",
+      "foreign_5d": 0,
+      "institution_5d": 0,
+      "days": []
+    },
+    "298040": {
+      "name": "효성중공업",
+      "foreign_5d": 0,
+      "institution_5d": 0,
+      "days": []
+    }
+  }
+}
