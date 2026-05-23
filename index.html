@@ -164,6 +164,14 @@ tbody tr:hover td{background:rgba(59,130,246,.04);}
 .del-btn:hover{color:var(--red);background:rgba(239,68,68,.1);}
 
 /* 수급 표시 */
+.fin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px;}
+.fin-item{background:var(--bg-card);border-radius:8px;padding:8px 10px;}
+.fin-lbl{font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;cursor:default;}
+.fin-val{font-size:0.88rem;font-weight:700;color:var(--text-primary);}
+.peg-green{color:#4ade80!important;}
+.peg-yellow{color:#fbbf24!important;}
+.peg-red{color:#f87171!important;}
+.peg-item .fin-val{cursor:help;}
 .supply-row{display:flex;gap:8px;margin:8px 0 0;flex-wrap:wrap;}
 .supply-item{display:flex;align-items:center;gap:5px;background:var(--bg-secondary);border-radius:6px;padding:5px 10px;flex:1;min-width:120px;}
 .supply-lbl{font-size:0.62rem;color:var(--text-muted);white-space:nowrap;}
@@ -645,13 +653,32 @@ function renderCards(){
     const _sTicker=h.ticker.replace(/\.(KS|KQ)$/,'');
     const _sMap={'000660':'000660','005930':'005930','005380':'005380','010120':'010120','042660':'042660','189300':'189300','298040':'298040'};
     const _sd=supplyData[_sMap[_sTicker]||_sTicker];
+    // 재무 지표 HTML 미리 계산
+    const _fticker=h.ticker.replace(/\.(KS|KQ)$/,'');
+    const _fd=financialsData.stocks&&financialsData.stocks[_fticker]||{};
+    const _eps=_fd.eps,_epsG=_fd.eps_growth,_roe=_fd.roe;
+    const _per=h.per,_pbr=h.pbr;
+    const _peg=(_per&&_epsG&&_epsG>0)?(_per/_epsG):null;
+    const _pegCls=_peg===null?'':'peg-'+(_peg<1?'green':_peg<1.5?'yellow':'red');
+    const _pegLabel=_peg===null?'—':_peg.toFixed(2);
+    const _pegTip=_peg===null?'':(_peg<1?'성장 대비 저평가':_peg<1.5?'적정 수준':'성장 대비 고평가');
+    const _fmtNum=(v,sfx)=>v==null?'—':(v>=0?'':'')+v.toLocaleString()+sfx;
+    const _fmtPct=(v)=>v==null?'—':(v>=0?'+':'')+v.toFixed(1)+'%';
+    let finHtml='<div class="fin-grid">'
+      +'<div class="fin-item"><div class="fin-lbl" onclick="showTooltip(\'PER\')">PER</div><div class="fin-val">'+(_per?_per+'배':'—')+'</div></div>'
+      +'<div class="fin-item"><div class="fin-lbl" onclick="showTooltip(\'PBR\')">PBR</div><div class="fin-val">'+(_pbr?_pbr+'배':'—')+'</div></div>'
+      +'<div class="fin-item"><div class="fin-lbl" onclick="showTooltip(\'ROE\')">ROE</div><div class="fin-val">'+(_roe?_roe+'%':'—')+'</div></div>'
+      +'<div class="fin-item"><div class="fin-lbl">EPS</div><div class="fin-val">'+(_eps?Math.round(_eps).toLocaleString()+'원':'—')+'</div></div>'
+      +'<div class="fin-item"><div class="fin-lbl">EPS성장</div><div class="fin-val '+(_epsG===null?'':_epsG>=0?'pnl-pos':'pnl-neg')+'">'+_fmtPct(_epsG)+'</div></div>'
+      +'<div class="fin-item peg-item"><div class="fin-lbl">PEG</div><div class="fin-val '+_pegCls+'" title="'+_pegTip+'">'+_pegLabel+'</div></div>'
+      +'</div>';
     let supplyHtml='';
     if(_sd&&(_sd.foreign_5d||_sd.institution_5d)){
       const _fv=_sd.foreign_5d||0,_iv=_sd.institution_5d||0;
       const _fC=_fv>0?'supply-pos':_fv<0?'supply-neg':'supply-flat';
       const _iC=_iv>0?'supply-pos':_iv<0?'supply-neg':'supply-flat';
       const _fA=_fv>0?'▲':_fv<0?'▼':'—',_iA=_iv>0?'▲':_iv<0?'▼':'—';
-      const _fB=n=>Math.abs(n)>=1e8?(n/1e8).toFixed(1)+'억':(n/1e4).toFixed(0)+'만';
+      const _fB=n=>Math.abs(n)>=1e4?(n/1e4).toFixed(1)+'만주':Math.abs(n)>=1e3?(n/1e3).toFixed(0)+'천주':Math.abs(n)+'주';
       supplyHtml='<div class="supply-row">'
         +'<div class="supply-item"><span class="supply-lbl">외국인 5일</span>'
         +'<span class="supply-val '+_fC+'">'+(_fv>=0?'+':'')+_fB(_fv)+' <span class="supply-arrow">'+_fA+'</span></span></div>'
@@ -683,6 +710,7 @@ function renderCards(){
       <div class="sc-body">
         <div class="sc-box">
           <div class="sc-box-title">📊 핵심 재무 지표</div>
+          ${finHtml}
         </div>
         <div class="sc-box">
           <div class="sc-box-title">💼 내 포지션</div>

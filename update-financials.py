@@ -48,10 +48,6 @@ def build_corp_map() -> dict:
 
 # ── 2. 수익성 지표 (ROE 등) ────────────────────────────────────
 def get_profitability(corp_code: str, year: int) -> dict:
-    """
-    fnlttSinglIndx + idx_cl_code=M210000 (수익성지표)
-    반환 필드: idx_nm, thstrm_val
-    """
     for reprt_code in ["11011", "11014", "11012"]:
         try:
             r = requests.get(f"{BASE}/fnlttSinglIndx.json",
@@ -65,7 +61,7 @@ def get_profitability(corp_code: str, year: int) -> dict:
                 for item in d["list"]:
                     nm  = item.get("idx_nm", "")
                     val = item.get("thstrm_val", "")
-                    result[nm.strip()] = val
+                    result[nm] = val
                 print(f"  수익성 {year}/{reprt_code} ✓ ({len(result)}개 항목)")
                 return result
         except Exception as e:
@@ -75,10 +71,6 @@ def get_profitability(corp_code: str, year: int) -> dict:
 
 # ── 3. 재무제표 전체 (EPS 추출) ────────────────────────────────
 def get_eps_from_acnt(corp_code: str, year: int) -> float | None:
-    """
-    fnlttSinglAcntAll → '기본주당이익(손실)' 항목 추출
-    fs_div: CFS=연결, OFS=별도 (연결 우선)
-    """
     for fs_div in ["CFS", "OFS"]:
         for reprt_code in ["11011", "11014", "11012"]:
             try:
@@ -113,7 +105,23 @@ def to_num(val) -> float | None:
         return None
 
 
-# ── 5. 메인 ──────────────────────────────────────────────────
+# ── 5. EPS 성장률 + PEG 계산 ─────────────────────────────────
+def calc_eps_growth(eps_cur, eps_prev):
+    """EPS 성장률(%) 계산. 전년도 EPS가 음수/0이면 None 반환"""
+    if eps_cur is None or eps_prev is None:
+        return None
+    if eps_prev <= 0:
+        return None
+    return round((eps_cur - eps_prev) / abs(eps_prev) * 100, 1)
+
+def calc_peg(per, eps_growth):
+    """PEG = PER / EPS성장률. 성장률이 0 이하면 None"""
+    if per is None or eps_growth is None or eps_growth <= 0:
+        return None
+    return round(per / eps_growth, 2)
+
+
+# ── 6. 메인 ──────────────────────────────────────────────────
 def main():
     if not DART_KEY:
         print("[ERROR] DART_API_KEY 없음")
@@ -136,15 +144,15 @@ def main():
         if not corp_code:
             print(f"  corp_code 없음")
             continue
-        print(f"  corp_code: {corp_code}")
 
-        data = {"eps": None, "bps": None, "roe": None, "dps": None}
+        data = {"eps": None, "eps_prev": None, "eps_growth": None,
+                "bps": None, "roe": None, "dps": None}
         found_year = None
 
         for year in [cur_year - 1, cur_year - 2]:
             prof = get_profitability(corp_code, year)
             eps  = get_eps_from_acnt(corp_code, year)
-            time.sleep(0.3)  # API rate limit 방지
+            time.sleep(0.3)
 
             if prof or eps is not None:
                 found_year = year
@@ -152,13 +160,20 @@ def main():
                 data["dps"] = to_num(prof.get("주당배당금"))
                 if eps is not None:
                     data["eps"] = eps
+
+                # 전년도 EPS 추가 조회 (성장률 계산용)
+                eps_prev = get_eps_from_acnt(corp_code, year - 1)
+                time.sleep(0.3)
+                data["eps_prev"] = eps_prev
+                data["eps_growth"] = calc_eps_growth(eps, eps_prev)
                 break
 
         result["stocks"][sc] = data
         if found_year and result["report_year"] is None:
             result["report_year"] = str(found_year)
 
-        print(f"  → EPS={data['eps']}  ROE={data['roe']}%")
+        g = data['eps_growth']
+        print(f"  → EPS={data['eps']}  EPS전년={data['eps_prev']}  성장률={g}%  ROE={data['roe']}%")
 
     out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "financials.json")
     with open(out_path, "w", encoding="utf-8") as f:
