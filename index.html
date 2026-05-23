@@ -162,6 +162,15 @@ tbody tr:hover td{background:rgba(59,130,246,.04);}
 .tag-sell{display:inline-block;background:rgba(96,165,250,.15);color:#60a5fa;border:1px solid rgba(96,165,250,.3);padding:2px 8px;border-radius:12px;font-size:0.68rem;font-weight:700;}
 .del-btn{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:0.85rem;padding:3px 6px;border-radius:4px;transition:all .15s;}
 .del-btn:hover{color:var(--red);background:rgba(239,68,68,.1);}
+
+/* 수급 표시 */
+.supply-row{display:flex;gap:8px;margin:8px 0 0;flex-wrap:wrap;}
+.supply-item{display:flex;align-items:center;gap:5px;background:var(--bg-secondary);border-radius:6px;padding:5px 10px;flex:1;min-width:120px;}
+.supply-lbl{font-size:0.62rem;color:var(--text-muted);white-space:nowrap;}
+.supply-val{font-size:0.78rem;font-weight:700;margin-left:auto;}
+.supply-pos{color:#f87171;}.supply-neg{color:#60a5fa;}.supply-flat{color:var(--text-muted);}
+.supply-arrow{font-size:0.7rem;}
+
 /* 모바일 터치 최적화 */
 @media(max-width:480px){
   .trade-form-grid{grid-template-columns:1fr 1fr;}
@@ -453,6 +462,7 @@ const SECTORS=[
    stocks:[{name:'현대차',ticker:'005380.KS'},{name:'기아',ticker:'000270.KS'},{name:'현대모비스',ticker:'012330.KS'}]},
 ];
 let sectorData={};
+let supplyData={};
 let financialsData={};
 
 const TOOLTIPS={
@@ -690,6 +700,31 @@ function renderCards(){
           </div>`:`<div style="color:var(--text-muted);font-size:0.8rem;padding:8px 0">⚙️ 보유 종목 설정에서<br>평균매수가를 입력해주세요.</div>`}
         </div>
       </div>
+      \${(()=>{
+        const ticker=h.ticker.replace(/\.(KS|KQ)\$/,'');
+        // ticker 매핑 (5자리 → supply.json 키)
+        const supplyMap={'000660':'000660','005930':'005930','005380':'005380','010120':'010120','042660':'042660','189300':'189300','298040':'298040'};
+        const skey=supplyMap[ticker]||ticker;
+        const sd=supplyData[skey];
+        if(!sd||(!sd.foreign_5d&&!sd.institution_5d)) return '';
+        const fv=sd.foreign_5d||0;
+        const iv=sd.institution_5d||0;
+        const fCls=fv>0?'supply-pos':fv<0?'supply-neg':'supply-flat';
+        const iCls=iv>0?'supply-pos':iv<0?'supply-neg':'supply-flat';
+        const fArr=fv>0?'▲':fv<0?'▼':'—';
+        const iArr=iv>0?'▲':iv<0?'▼':'—';
+        const fmtB=n=>Math.abs(n)>=1e8?(n/1e8).toFixed(1)+'억':(n/1e4).toFixed(0)+'만';
+        return \`<div class="supply-row">
+          <div class="supply-item">
+            <span class="supply-lbl">외국인 5일</span>
+            <span class="supply-val \${fCls}">\${fv>=0?'+':''}\${fmtB(fv)} <span class="supply-arrow">\${fArr}</span></span>
+          </div>
+          <div class="supply-item">
+            <span class="supply-lbl">기관 5일</span>
+            <span class="supply-val \${iCls}">\${iv>=0?'+':''}\${fmtB(iv)} <span class="supply-arrow">\${iArr}</span></span>
+          </div>
+        </div>\`;
+      })()}
       <div class="sc-box" style="margin-bottom:10px">
         <div class="sc-box-title">📍 52주 가격 위치</div>
         ${pos!=null?gaugeHTML(pos,high,low):'<span style="color:var(--text-muted);font-size:0.8rem">📈 시장 업데이트 후 표시됩니다</span>'}
@@ -735,6 +770,16 @@ function renderSectors(){
       </div>
     </div>`;
   }).join('');
+}
+
+async function fetchSupply(){
+  try{
+    const r=await fetch('supply.json?t='+Date.now());
+    if(!r.ok)return;
+    const d=await r.json();
+    supplyData=d.stocks||{};
+    console.log('[수급] 로드 완료:', Object.keys(supplyData).length,'종목');
+  }catch(e){console.warn('[수급] supply.json 로딩 실패:', e);}
 }
 
 async function fetchSectors(){
@@ -1219,7 +1264,8 @@ async function init(){
   await Promise.all([
     fetchPrices().then(ok=>{ if(ok) renderAll(); }),
     fetchSectors(),
-    fetchFinancials().then(()=>renderAll())
+    fetchFinancials().then(()=>renderAll()),
+    fetchSupply().then(()=>renderAll())
   ]);
 }
 
