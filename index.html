@@ -575,7 +575,7 @@ function pnlCls(v){return v>0?'pnl-pos':v<0?'pnl-neg':'';}
 function priceCls(v){return v>0?'price-up':v<0?'price-dn':'price-flat';}
 
 function renderSummary(){
-  document.getElementById('summary-tbody').innerHTML=HOLDINGS.map(h=>{
+  document.getElementById('summary-tbody').innerHTML=HOLDINGS.filter(h=>(state.settings[h.id]?.qty||0)>0).map(h=>{
     const p=state.prices[h.ticker];const s=state.settings[h.id];
     const price=p?.price;const high=p?.w52h||h.week52H;const low=p?.w52l||h.week52L;
     const pos=price?w52pos(price,high,low):null;
@@ -597,7 +597,7 @@ function renderSummary(){
 }
 
 function renderCards(){
-  document.getElementById('stock-cards').innerHTML=HOLDINGS.map(h=>{
+  document.getElementById('stock-cards').innerHTML=HOLDINGS.filter(h=>(state.settings[h.id]?.qty||0)>0).map(h=>{
     const p=state.prices[h.ticker];const s=state.settings[h.id];
     const price=p?.price;const chg=p?.change;const pct=p?.pct;
     const high=p?.w52h||h.week52H;const low=p?.w52l||h.week52L;
@@ -1052,7 +1052,21 @@ function importTrades(event){
   event.target.value='';
 }
 
-function renderAll(){renderSummary();renderCards();renderTradeSection();}
+// 거래 내역 기준으로 state.settings 동기화 (renderSummary/renderCards 호출 전 먼저 실행)
+function syncHoldingsFromTrades(){
+  const trades=loadTrades();
+  const holdings=calcHoldings(trades);
+  HOLDINGS.forEach(h=>{
+    const pos=holdings[h.id];
+    if(pos&&pos.qty>0){
+      state.settings[h.id]={avgPrice:Math.round(pos.avgPrice),qty:pos.qty};
+    } else if(pos&&pos.qty===0&&trades.some(t=>t.stockId===h.id)){
+      state.settings[h.id]={avgPrice:0,qty:0};
+    }
+  });
+}
+
+function renderAll(){syncHoldingsFromTrades();renderSummary();renderCards();renderTradeSection();}
 
 async function init(){
   initDefaultTrades();
