@@ -20,14 +20,21 @@ STOCKS = {
 
 KST = timezone(timedelta(hours=9))
 now = datetime.now(KST)
-today = now.strftime("%Y%m%d")
-from_d = (now - timedelta(days=14)).strftime("%Y%m%d")  # 14일치 → 5 거래일 확보
+
+# 마지막 거래일 계산 (주말이면 금요일로)
+end_day = now
+while end_day.weekday() >= 5:  # 5=토, 6=일
+    end_day -= timedelta(days=1)
+
+today = end_day.strftime("%Y%m%d")
+from_d = (end_day - timedelta(days=14)).strftime("%Y%m%d")  # 14일치 → 5 거래일 확보
+
+print(f"📅 조회 기간: {from_d} ~ {today}")
 
 result = {}
 
 for ticker, name in STOCKS.items():
     try:
-        # 투자자별 순매수 거래대금 (단위: 원)
         df = krx.get_market_trading_value_by_date(from_d, today, ticker)
 
         if df is None or df.empty:
@@ -35,7 +42,6 @@ for ticker, name in STOCKS.items():
             result[ticker] = {"name": name, "foreign_5d": 0, "institution_5d": 0, "days": []}
             continue
 
-        # 컬럼명 확인 (디버그)
         print(f"  [{name}] 컬럼: {list(df.columns)}")
 
         df5 = df.tail(5)
@@ -56,12 +62,10 @@ for ticker, name in STOCKS.items():
                     v = int(val) if val == val else 0
                 except Exception:
                     v = 0
-                # pykrx 컬럼: "외국인합계" (기타외국인 제외), "기관합계"
                 if cs == "외국인합계":
                     foreign_net = v
                 elif cs == "기관합계":
                     institution_net = v
-                # 혹시 "순" 포함 버전도 대응
                 elif "외국인" in cs and "순" in cs and "기타" not in cs:
                     foreign_net = v
                 elif "기관" in cs and "순" in cs and "외국인" not in cs:
