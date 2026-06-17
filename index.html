@@ -366,6 +366,7 @@ tbody tr:hover td{background:rgba(59,130,246,.04);}
       <button class="btn btn-outline" onclick="exportTrades()">⬇️ JSON 내보내기</button>
       <button class="btn btn-outline" onclick="document.getElementById('import-file').click()">⬆️ JSON 가져오기</button>
       <input type="file" id="import-file" accept=".json" style="display:none" onchange="importTrades(event)">
+      <button class="btn btn-outline" style="color:var(--red);border-color:var(--red)" onclick="resetToDefaultTrades()">🔄 데이터 초기화</button>
     </div>
     <div style="font-size:0.72rem;color:var(--text-muted)">
       💡 <b>폰 → PC 동기화:</b> 폰에서 내보내기 → 구글 드라이브에 저장 → PC 브라우저에서 가져오기<br>
@@ -861,17 +862,32 @@ function scrollToCard(id){
 
 // ── 기본 거래 데이터 (최초 접속 시 자동 로드) ──────────────────────────
 const DEFAULT_TRADES = [
-  // 매수 내역 (평균단가 기준 초기 등록 · 날짜는 실제 매수일로 수정 가능)
-  {id:1000000001,date:"2025-01-01",stockId:"hynix",    type:"buy",qty:15, price:551733,  memo:"초기 평균단가 등록"},
-  {id:1000000002,date:"2025-01-01",stockId:"samsung",  type:"buy",qty:87, price:172167,  memo:"초기 평균단가 등록"},
-  {id:1000000003,date:"2025-01-01",stockId:"hyundai",  type:"buy",qty:20, price:504000,  memo:"초기 평균단가 등록"},
-  {id:1000000004,date:"2025-01-01",stockId:"ls",       type:"buy",qty:91, price:288500,  memo:"초기 평균단가 등록"},
-  {id:1000000005,date:"2025-01-01",stockId:"hanwha",   type:"buy",qty:240,price:123200,  memo:"초기 평균단가 등록"},
-  {id:1000000006,date:"2025-01-01",stockId:"intellian",type:"buy",qty:2,  price:138650,  memo:"초기 평균단가 등록"},
-  {id:1000000007,date:"2025-01-01",stockId:"hyosung",  type:"buy",qty:7,  price:4150000, memo:"초기 평균단가 등록"},
-  // 2026-05-21 매도
-  {id:2000000001,date:"2026-05-21",stockId:"hynix",  type:"sell",qty:15,price:1934748,memo:"전량 매도",realizedPnl:20745231},
-  {id:2000000002,date:"2026-05-21",stockId:"samsung",type:"sell",qty:87,price:297334, memo:"전량 매도",realizedPnl:10889528},
+  // 초기 매수 (평균단가 기준)
+  {id:1000000001,date:"2025-01-01",stockId:"hynix",    type:"buy", qty:15,  price:551733,  memo:"초기 평균단가 등록"},
+  {id:1000000002,date:"2025-01-01",stockId:"samsung",  type:"buy", qty:87,  price:172167,  memo:"초기 평균단가 등록"},
+  {id:1000000003,date:"2025-01-01",stockId:"hyundai",  type:"buy", qty:20,  price:504000,  memo:"초기 평균단가 등록"},
+  {id:1000000004,date:"2025-01-01",stockId:"ls",       type:"buy", qty:91,  price:288500,  memo:"초기 평균단가 등록"},
+  {id:1000000005,date:"2025-01-01",stockId:"hanwha",   type:"buy", qty:240, price:123200,  memo:"초기 평균단가 등록"},
+  {id:1000000006,date:"2025-01-01",stockId:"intellian",type:"buy", qty:2,   price:138650,  memo:"초기 평균단가 등록"},
+  {id:1000000007,date:"2025-01-01",stockId:"hyosung",  type:"buy", qty:7,   price:4150000, memo:"초기 평균단가 등록"},
+  // 2026-05-26 SK하이닉스·삼성전자 전량 매도
+  {id:3000000001,date:"2026-05-26",stockId:"hynix",    type:"sell",qty:15,  price:1939000, memo:"전량 매도",realizedPnl:20809005},
+  {id:3000000002,date:"2026-05-26",stockId:"samsung",  type:"sell",qty:87,  price:298000,  memo:"전량 매도",realizedPnl:10947471},
+  // 2026-05-29 재매수
+  {id:3000000003,date:"2026-05-29",stockId:"hynix",    type:"buy", qty:12,  price:2330000, memo:"재매수"},
+  {id:3000000004,date:"2026-05-29",stockId:"samsung",  type:"buy", qty:84,  price:319500,  memo:"재매수"},
+  // 2026-06-04 LS ELECTRIC·효성중공업 매도, 삼현 신규 매수
+  {id:3000000005,date:"2026-06-04",stockId:"ls",       type:"sell",qty:91,  price:270000,  memo:"전량 매도",realizedPnl:-1683500},
+  {id:3000000006,date:"2026-06-04",stockId:"hyosung",  type:"sell",qty:7,   price:3902000, memo:"전량 매도",realizedPnl:-1736000},
+  {id:3000000007,date:"2026-06-04",stockId:"samhyun",  type:"buy", qty:20,  price:53400,   memo:"신규 매수"},
+  // 2026-06-08 추가 매수
+  {id:3000000008,date:"2026-06-08",stockId:"hynix",    type:"buy", qty:11,  price:2285000, memo:"추가 매수"},
+  {id:3000000009,date:"2026-06-08",stockId:"samsung",  type:"buy", qty:71,  price:353500,  memo:"추가 매수"},
+  // 2026-06-11 추가 매수
+  {id:3000000010,date:"2026-06-11",stockId:"intellian",type:"buy", qty:1,   price:101000,  memo:"추가 매수"},
+  {id:3000000011,date:"2026-06-11",stockId:"samsung",  type:"buy", qty:1,   price:307000,  memo:"추가 매수"},
+  // 2026-06-16 추가 매수
+  {id:3000000012,date:"2026-06-16",stockId:"intellian",type:"buy", qty:1,   price:106300,  memo:"추가 매수"},
 ];
 
 function initDefaultTrades(){
@@ -879,6 +895,12 @@ function initDefaultTrades(){
     localStorage.setItem('boss_trades', JSON.stringify(DEFAULT_TRADES));
     console.log('[거래관리] 기본 거래 데이터 초기화 완료');
   }
+}
+function resetToDefaultTrades(){
+  if(!confirm('거래 데이터를 최신 기본값으로 전체 교체하시겠습니까?\n(기존 데이터가 삭제됩니다)'))return;
+  localStorage.setItem('boss_trades', JSON.stringify(DEFAULT_TRADES));
+  renderTradeSection(); renderAll();
+  alert('✅ 거래 데이터가 초기화되었습니다. ('+DEFAULT_TRADES.length+'개)');
 }
 function loadTrades(){
   try{return JSON.parse(localStorage.getItem('boss_trades')||'[]');}
