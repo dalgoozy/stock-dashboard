@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "exported": "2026-06-17",
+  "note": "영웅문 거래내역 캡처 기준 실제 체결가 반영 (2026-06-17 업데이트)",
+  "trades": [
+    {"id":1000000001,"date":"2025-01-01","stockId":"hynix",    "type":"buy", "qty":15,  "price":551733,  "memo":"초기 평균단가 등록"},
+    {"id":1000000002,"date":"2025-01-01","stockId":"samsung",  "type":"buy", "qty":87,  "price":172167,  "memo":"초기 평균단가 등록"},
+    {"id":1000000003,"date":"2025-01-01","stockId":"hyundai",  "type":"buy", "qty":20,  "price":504000,  "memo":"초기 평균단가 등록"},
+    {"id":1000000004,"date":"2025-01-01","stockId":"ls",       "type":"buy", "qty":91,  "price":288500,  "memo":"초기 평균단가 등록"},
+    {"id":1000000005,"date":"2025-01-01","stockId":"hanwha",   "type":"buy", "qty":240, "price":123200,  "memo":"초기 평균단가 등록"},
+    {"id":1000000006,"date":"2025-01-01","stockId":"intellian","type":"buy", "qty":2,   "price":138650,  "memo":"초기 평균단가 등록"},
+    {"id":1000000007,"date":"2025-01-01","stockId":"hyosung",  "type":"buy", "qty":7,   "price":4150000, "memo":"초기 평균단가 등록"},
+    {"id":3000000001,"date":"2026-05-26","stockId":"hynix",    "type":"sell","qty":15,  "price":1939000, "memo":"전량 매도", "realizedPnl":20809005},
+    {"id":3000000002,"date":"2026-05-26","stockId":"samsung",  "type":"sell","qty":87,  "price":298000,  "memo":"전량 매도", "realizedPnl":10947471},
+    {"id":3000000003,"date":"2026-05-29","stockId":"hynix",    "type":"buy", "qty":12,  "price":2330000, "memo":"재매수"},
+    {"id":3000000004,"date":"2026-05-29","stockId":"samsung",  "type":"buy", "qty":84,  "price":319500,  "memo":"재매수"},
+    {"id":3000000005,"date":"2026-06-04","stockId":"ls",       "type":"sell","qty":91,  "price":270000,  "memo":"전량 매도", "realizedPnl":-1683500},
+    {"id":3000000006,"date":"2026-06-04","stockId":"hyosung",  "type":"sell","qty":7,   "price":3902000, "memo":"전량 매도", "realizedPnl":-1736000},
+    {"id":3000000007,"date":"2026-06-04","stockId":"samhyun",  "type":"buy", "qty":20,  "price":53400,   "memo":"신규 매수"},
+    {"id":3000000008,"date":"2026-06-08","stockId":"hynix",    "type":"buy", "qty":11,  "price":2285000, "memo":"추가 매수"},
+    {"id":3000000009,"date":"2026-06-08","stockId":"samsung",  "type":"buy", "qty":71,  "price":353500,  "memo":"추가 매수"},
+    {"id":3000000010,"date":"2026-06-11","stockId":"intellian","type":"buy", "qty":1,   "price":101000,  "memo":"추가 매수"},
+    {"id":3000000011,"date":"2026-06-11","stockId":"samsung",  "type":"buy", "qty":1,   "price":307000,  "memo":"추가 매수"},
+    {"id":3000000012,"date":"2026-06-16","stockId":"intellian","type":"buy", "qty":1,   "price":106300,  "memo":"추가 매수"}
+  ]
+}
