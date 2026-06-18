@@ -1,55 +1,230 @@
 {
-  "updated": "2026.06.17 15:32 KST",
+  "updated": "2026.06.18 15:16 KST",
   "unit": "shares",
   "stocks": {
     "000660": {
       "name": "SK하이닉스",
-      "foreign_5d": 0,
-      "institution_5d": 0,
-      "days": [],
-      "error": "HTTPSConnectionPool(host='finance.naver.com', port=443): Max retries exceeded with url: /item/frgn.naver?code=000660 (Caused by ConnectTimeoutError(<HTTPSConnection(host='finance.naver.com', port=443) at 0x7f8cbd0a0e10>, 'Connection to finance.naver.com timed out. (connect timeout=15)'))"
+      "foreign_5d": 1441201,
+      "institution_5d": -38107,
+      "days": [
+        {
+          "date": "2026-06-17",
+          "foreign": 74908,
+          "institution": 341331
+        },
+        {
+          "date": "2026-06-16",
+          "foreign": 351894,
+          "institution": 238957
+        },
+        {
+          "date": "2026-06-15",
+          "foreign": 180233,
+          "institution": 165238
+        },
+        {
+          "date": "2026-06-12",
+          "foreign": 573440,
+          "institution": -270178
+        },
+        {
+          "date": "2026-06-11",
+          "foreign": 260726,
+          "institution": -513455
+        }
+      ]
     },
     "005930": {
       "name": "삼성전자",
-      "foreign_5d": 0,
-      "institution_5d": 0,
-      "days": [],
-      "error": "HTTPSConnectionPool(host='finance.naver.com', port=443): Max retries exceeded with url: /item/frgn.naver?code=005930 (Caused by ConnectTimeoutError(<HTTPSConnection(host='finance.naver.com', port=443) at 0x7f8cbbe72250>, 'Connection to finance.naver.com timed out. (connect timeout=15)'))"
+      "foreign_5d": -426520,
+      "institution_5d": 362083,
+      "days": [
+        {
+          "date": "2026-06-17",
+          "foreign": -2000080,
+          "institution": 1133803
+        },
+        {
+          "date": "2026-06-16",
+          "foreign": -27451,
+          "institution": 839414
+        },
+        {
+          "date": "2026-06-15",
+          "foreign": -1828940,
+          "institution": 531697
+        },
+        {
+          "date": "2026-06-12",
+          "foreign": 2880306,
+          "institution": 3295009
+        },
+        {
+          "date": "2026-06-11",
+          "foreign": 549645,
+          "institution": -5437840
+        }
+      ]
     },
     "005380": {
       "name": "현대차",
-      "foreign_5d": 0,
-      "institution_5d": 0,
-      "days": [],
-      "error": "HTTPSConnectionPool(host='finance.naver.com', port=443): Max retries exceeded with url: /item/frgn.naver?code=005380 (Caused by ConnectTimeoutError(<HTTPSConnection(host='finance.naver.com', port=443) at 0x7f8cbbe73e10>, 'Connection to finance.naver.com timed out. (connect timeout=15)'))"
+      "foreign_5d": -64548,
+      "institution_5d": -641116,
+      "days": [
+        {
+          "date": "2026-06-17",
+          "foreign": -230989,
+          "institution": -229498
+        },
+        {
+          "date": "2026-06-16",
+          "foreign": 183503,
+          "institution": -428703
+        },
+        {
+          "date": "2026-06-15",
+          "foreign": 177244,
+          "institution": -47727
+        },
+        {
+          "date": "2026-06-12",
+          "foreign": 83179,
+          "institution": -67415
+        },
+        {
+          "date": "2026-06-11",
+          "foreign": -277485,
+          "institution": 132227
+        }
+      ]
     },
     "010120": {
       "name": "LS ELECTRIC",
-      "foreign_5d": 0,
-      "institution_5d": 0,
-      "days": [],
-      "error": "HTTPSConnectionPool(host='finance.naver.com', port=443): Max retries exceeded with url: /item/frgn.naver?code=010120 (Caused by ConnectTimeoutError(<HTTPSConnection(host='finance.naver.com', port=443) at 0x7f8cbbe81a50>, 'Connection to finance.naver.com timed out. (connect timeout=15)'))"
+      "foreign_5d": 755171,
+      "institution_5d": -1218567,
+      "days": [
+        {
+          "date": "2026-06-17",
+          "foreign": -145398,
+          "institution": -26637
+        },
+        {
+          "date": "2026-06-16",
+          "foreign": -29141,
+          "institution": -1154
+        },
+        {
+          "date": "2026-06-15",
+          "foreign": 319403,
+          "institution": 30211
+        },
+        {
+          "date": "2026-06-12",
+          "foreign": 676048,
+          "institution": -1156087
+        },
+        {
+          "date": "2026-06-11",
+          "foreign": -65741,
+          "institution": -64900
+        }
+      ]
     },
     "042660": {
       "name": "한화오션",
-      "foreign_5d": 0,
-      "institution_5d": 0,
-      "days": [],
-      "error": "HTTPSConnectionPool(host='finance.naver.com', port=443): Max retries exceeded with url: /item/frgn.naver?code=042660 (Caused by ConnectTimeoutError(<HTTPSConnection(host='finance.naver.com', port=443) at 0x7f8cbbe83610>, 'Connection to finance.naver.com timed out. (connect timeout=15)'))"
+      "foreign_5d": 1362340,
+      "institution_5d": 370195,
+      "days": [
+        {
+          "date": "2026-06-17",
+          "foreign": 1530933,
+          "institution": 275336
+        },
+        {
+          "date": "2026-06-16",
+          "foreign": 343803,
+          "institution": 66179
+        },
+        {
+          "date": "2026-06-15",
+          "foreign": 149925,
+          "institution": 120690
+        },
+        {
+          "date": "2026-06-12",
+          "foreign": -373217,
+          "institution": 48015
+        },
+        {
+          "date": "2026-06-11",
+          "foreign": -289104,
+          "institution": -140025
+        }
+      ]
     },
     "189300": {
       "name": "인텔리안테크",
-      "foreign_5d": 0,
-      "institution_5d": 0,
-      "days": [],
-      "error": "HTTPSConnectionPool(host='finance.naver.com', port=443): Max retries exceeded with url: /item/frgn.naver?code=189300 (Caused by ConnectTimeoutError(<HTTPSConnection(host='finance.naver.com', port=443) at 0x7f8cbbe81f10>, 'Connection to finance.naver.com timed out. (connect timeout=15)'))"
+      "foreign_5d": 23493,
+      "institution_5d": -17476,
+      "days": [
+        {
+          "date": "2026-06-17",
+          "foreign": 21989,
+          "institution": 12793
+        },
+        {
+          "date": "2026-06-16",
+          "foreign": -10018,
+          "institution": 8004
+        },
+        {
+          "date": "2026-06-15",
+          "foreign": 36591,
+          "institution": -23030
+        },
+        {
+          "date": "2026-06-12",
+          "foreign": -60035,
+          "institution": 36276
+        },
+        {
+          "date": "2026-06-11",
+          "foreign": 34966,
+          "institution": -51519
+        }
+      ]
     },
     "298040": {
       "name": "효성중공업",
-      "foreign_5d": 0,
-      "institution_5d": 0,
-      "days": [],
-      "error": "HTTPSConnectionPool(host='finance.naver.com', port=443): Max retries exceeded with url: /item/frgn.naver?code=298040 (Caused by ConnectTimeoutError(<HTTPSConnection(host='finance.naver.com', port=443) at 0x7f8cbbe81e50>, 'Connection to finance.naver.com timed out. (connect timeout=15)'))"
+      "foreign_5d": -17068,
+      "institution_5d": 26975,
+      "days": [
+        {
+          "date": "2026-06-17",
+          "foreign": 1213,
+          "institution": -717
+        },
+        {
+          "date": "2026-06-16",
+          "foreign": 1683,
+          "institution": 10032
+        },
+        {
+          "date": "2026-06-15",
+          "foreign": -4698,
+          "institution": 10495
+        },
+        {
+          "date": "2026-06-12",
+          "foreign": -14322,
+          "institution": 16273
+        },
+        {
+          "date": "2026-06-11",
+          "foreign": -944,
+          "institution": -9108
+        }
+      ]
     }
   }
 }
