@@ -1,12 +1,17 @@
 {
-  "updated": "2026.09.03 15:04 KST",
+  "updated": "2026.09.04 15:12 KST",
   "unit": "shares",
   "stocks": {
     "000660": {
       "name": "SK하이닉스",
-      "foreign_5d": -1121227,
-      "institution_5d": -1688511,
+      "foreign_5d": -1196468,
+      "institution_5d": -1735470,
       "days": [
+        {
+          "date": "2026-09-03",
+          "foreign": -234626,
+          "institution": -187288
+        },
         {
           "date": "2026-09-02",
           "foreign": -651507,
@@ -26,19 +31,19 @@
           "date": "2026-08-28",
           "foreign": -190235,
           "institution": -796000
-        },
-        {
-          "date": "2026-08-27",
-          "foreign": -159385,
-          "institution": -140329
         }
       ]
     },
     "005930": {
       "name": "삼성전자",
-      "foreign_5d": -2576734,
-      "institution_5d": -7417457,
+      "foreign_5d": -3866695,
+      "institution_5d": -8159625,
       "days": [
+        {
+          "date": "2026-09-03",
+          "foreign": 91825,
+          "institution": -839601
+        },
         {
           "date": "2026-09-02",
           "foreign": -1321536,
@@ -58,19 +63,19 @@
           "date": "2026-08-28",
           "foreign": -1927155,
           "institution": -1652437
-        },
-        {
-          "date": "2026-08-27",
-          "foreign": 1381786,
-          "institution": -97433
         }
       ]
     },
     "005380": {
       "name": "현대차",
-      "foreign_5d": -311361,
-      "institution_5d": -858185,
+      "foreign_5d": 61090,
+      "institution_5d": -429426,
       "days": [
+        {
+          "date": "2026-09-03",
+          "foreign": 77716,
+          "institution": 2807
+        },
         {
           "date": "2026-09-02",
           "foreign": -139276,
@@ -90,19 +95,19 @@
           "date": "2026-08-28",
           "foreign": -12634,
           "institution": -3463
-        },
-        {
-          "date": "2026-08-27",
-          "foreign": -294735,
-          "institution": -425952
         }
       ]
     },
     "010120": {
       "name": "LS ELECTRIC",
-      "foreign_5d": 95106,
-      "institution_5d": 17713,
+      "foreign_5d": -264822,
+      "institution_5d": -214013,
       "days": [
+        {
+          "date": "2026-09-03",
+          "foreign": -76493,
+          "institution": -40693
+        },
         {
           "date": "2026-09-02",
           "foreign": -41042,
@@ -122,19 +127,19 @@
           "date": "2026-08-28",
           "foreign": 15274,
           "institution": 30050
-        },
-        {
-          "date": "2026-08-27",
-          "foreign": 283435,
-          "institution": 191033
         }
       ]
     },
     "042660": {
       "name": "한화오션",
-      "foreign_5d": 13205,
-      "institution_5d": -122290,
+      "foreign_5d": 108046,
+      "institution_5d": 25078,
       "days": [
+        {
+          "date": "2026-09-03",
+          "foreign": 263028,
+          "institution": 181406
+        },
         {
           "date": "2026-09-02",
           "foreign": -168342,
@@ -154,19 +159,19 @@
           "date": "2026-08-28",
           "foreign": -5028,
           "institution": 30665
-        },
-        {
-          "date": "2026-08-27",
-          "foreign": 168187,
-          "institution": 34038
         }
       ]
     },
     "189300": {
       "name": "인텔리안테크",
-      "foreign_5d": 23587,
-      "institution_5d": -32141,
+      "foreign_5d": 41839,
+      "institution_5d": -38426,
       "days": [
+        {
+          "date": "2026-09-03",
+          "foreign": 15881,
+          "institution": -2083
+        },
         {
           "date": "2026-09-02",
           "foreign": 6917,
@@ -186,19 +191,19 @@
           "date": "2026-08-28",
           "foreign": -6560,
           "institution": -3917
-        },
-        {
-          "date": "2026-08-27",
-          "foreign": -2371,
-          "institution": 4202
         }
       ]
     },
     "298040": {
       "name": "효성중공업",
-      "foreign_5d": -20548,
-      "institution_5d": 13089,
+      "foreign_5d": -40729,
+      "institution_5d": -9061,
       "days": [
+        {
+          "date": "2026-09-03",
+          "foreign": -4108,
+          "institution": -7735
+        },
         {
           "date": "2026-09-02",
           "foreign": -8408,
@@ -218,11 +223,6 @@
           "date": "2026-08-28",
           "foreign": -7046,
           "institution": 7411
-        },
-        {
-          "date": "2026-08-27",
-          "foreign": 16073,
-          "institution": 14415
         }
       ]
     }
