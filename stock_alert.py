@@ -219,7 +219,7 @@ def main():
         subject = f"[Boss Stock] {subject_tag} ⚠️1단계(추세꺾임) {stage1_cnt}종목 - {now_str}"
 
     html = build_html(all_stocks, f"{now_str}  |  {alert_tag}")
-    send_email(subject, html)
+    # send_email(subject, html)  # 이메일 발송 비활성화
     print(f"[DONE] 알림 {len(alerts)}종목 — 최고단계: {max_stage_overall}단계")
 
 if __name__ == "__main__":
