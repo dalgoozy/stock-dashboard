@@ -1,14 +1,14 @@
 {
-  "updated": "2026.11.05 00:39 KST",
+  "updated": "2026.11.07 00:16 KST",
   "sectors": {
     "power": {
-      "avg_pct": 1.74,
+      "avg_pct": -9.29,
       "stocks": [
         {
           "name": "효성중공업",
           "ticker": "298040.KS",
-          "price": 2049000,
-          "pct": 4.17,
+          "price": 1577000,
+          "pct": -10.65,
           "pos52": null,
           "w52h": null,
           "w52l": null
@@ -16,8 +16,8 @@
         {
           "name": "LS ELECTRIC",
           "ticker": "010120.KS",
-          "price": 150700,
-          "pct": -0.13,
+          "price": 116500,
+          "pct": -8.7,
           "pos52": null,
           "w52h": null,
           "w52l": null
@@ -25,8 +25,8 @@
         {
           "name": "HD현대일렉트릭",
           "ticker": "267260.KS",
-          "price": 438500,
-          "pct": 0.11,
+          "price": 366500,
+          "pct": -6.98,
           "pos52": null,
           "w52h": null,
           "w52l": null
@@ -34,8 +34,8 @@
         {
           "name": "일진전기",
           "ticker": "103590.KS",
-          "price": 55000,
-          "pct": 2.8,
+          "price": 43250,
+          "pct": -10.82,
           "pos52": null,
           "w52h": null,
           "w52l": null
@@ -43,13 +43,13 @@
       ]
     },
     "shipbuilding": {
-      "avg_pct": -0.62,
+      "avg_pct": -2.81,
       "stocks": [
         {
           "name": "한화오션",
           "ticker": "042660.KS",
-          "price": 52800,
-          "pct": -1.77,
+          "price": 47350,
+          "pct": -2.77,
           "pos52": null,
           "w52h": null,
           "w52l": null
@@ -57,8 +57,8 @@
         {
           "name": "HD한국조선해양",
           "ticker": "009540.KS",
-          "price": 252500,
-          "pct": -1.37,
+          "price": 240000,
+          "pct": -1.64,
           "pos52": null,
           "w52h": null,
           "w52l": null
@@ -66,8 +66,8 @@
         {
           "name": "삼성중공업",
           "ticker": "010140.KS",
-          "price": 17460,
-          "pct": 1.28,
+          "price": 16200,
+          "pct": -4.03,
           "pos52": null,
           "w52h": null,
           "w52l": null
@@ -75,13 +75,13 @@
       ]
     },
     "defense": {
-      "avg_pct": 4.56,
+      "avg_pct": -3.58,
       "stocks": [
         {
           "name": "한화에어로스페이스",
           "ticker": "012450.KS",
-          "price": 735000,
-          "pct": -0.54,
+          "price": 660000,
+          "pct": -1.49,
           "pos52": null,
           "w52h": null,
           "w52l": null
@@ -89,8 +89,8 @@
         {
           "name": "LIG넥스원",
           "ticker": "079550.KS",
-          "price": 420500,
-          "pct": 1.57,
+          "price": 326000,
+          "pct": -7.39,
           "pos52": null,
           "w52h": null,
           "w52l": null
@@ -98,8 +98,8 @@
         {
           "name": "현대로템",
           "ticker": "064350.KS",
-          "price": 80000,
-          "pct": 4.71,
+          "price": 71500,
+          "pct": -3.9,
           "pos52": null,
           "w52h": null,
           "w52l": null
@@ -107,8 +107,8 @@
         {
           "name": "한국항공우주",
           "ticker": "047810.KS",
-          "price": 108800,
-          "pct": 12.51,
+          "price": 102600,
+          "pct": -1.54,
           "pos52": null,
           "w52h": null,
           "w52l": null
@@ -116,13 +116,13 @@
       ]
     },
     "semiconductor": {
-      "avg_pct": 0.78,
+      "avg_pct": -6.31,
       "stocks": [
         {
           "name": "SK하이닉스",
           "ticker": "000660.KS",
-          "price": 1396000,
-          "pct": -0.07,
+          "price": 1132000,
+          "pct": -9.8,
           "pos52": null,
           "w52h": null,
           "w52l": null
@@ -130,8 +130,8 @@
         {
           "name": "삼성전자",
           "ticker": "005930.KS",
-          "price": 218000,
-          "pct": -0.91,
+          "price": 188700,
+          "pct": -5.6,
           "pos52": null,
           "w52h": null,
           "w52l": null
@@ -139,8 +139,8 @@
         {
           "name": "한미반도체",
           "ticker": "042700.KS",
-          "price": 186100,
-          "pct": 3.33,
+          "price": 161400,
+          "pct": -3.53,
           "pos52": null,
           "w52h": null,
           "w52l": null
@@ -148,13 +148,13 @@
       ]
     },
     "chemical": {
-      "avg_pct": 3.07,
+      "avg_pct": -5.03,
       "stocks": [
         {
           "name": "LG화학",
           "ticker": "051910.KS",
-          "price": 247000,
-          "pct": 4.22,
+          "price": 232000,
+          "pct": -4.92,
           "pos52": null,
           "w52h": null,
           "w52l": null
@@ -162,8 +162,8 @@
         {
           "name": "SK이노베이션",
           "ticker": "096770.KS",
-          "price": 123700,
-          "pct": 3.95,
+          "price": 109400,
+          "pct": -3.36,
           "pos52": null,
           "w52h": null,
           "w52l": null
@@ -171,8 +171,8 @@
         {
           "name": "롯데케미칼",
           "ticker": "011170.KS",
-          "price": 49200,
-          "pct": 1.03,
+          "price": 46600,
+          "pct": -6.8,
           "pos52": null,
           "w52h": null,
           "w52l": null
@@ -180,13 +180,13 @@
       ]
     },
     "auto": {
-      "avg_pct": 0.79,
+      "avg_pct": -2.2,
       "stocks": [
         {
           "name": "현대차",
           "ticker": "005380.KS",
-          "price": 283500,
-          "pct": 2.07,
+          "price": 279500,
+          "pct": -3.62,
           "pos52": null,
           "w52h": null,
           "w52l": null
@@ -194,8 +194,8 @@
         {
           "name": "기아",
           "ticker": "000270.KS",
-          "price": 95800,
-          "pct": -0.83,
+          "price": 100300,
+          "pct": 0.2,
           "pos52": null,
           "w52h": null,
           "w52l": null
@@ -203,8 +203,8 @@
         {
           "name": "현대모비스",
           "ticker": "012330.KS",
-          "price": 355000,
-          "pct": 1.14,
+          "price": 349000,
+          "pct": -3.19,
           "pos52": null,
           "w52h": null,
           "w52l": null
